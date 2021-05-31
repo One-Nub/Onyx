@@ -5,12 +5,21 @@ typedef PrefixHandlerFunction = FutureOr<String?> Function(String);
 final _onyxLogger = Logger("Onyx");
 
 class Onyx {
+  /// Regex used to split string along spaces, single quotes, and double quotes.
+  ///
+  /// Matches the text inbetween these zones rather than splitting around these zones.
   final _argsRegex = RegExp("'.*?'|\".*?\"|\S+");
 
+  /// Nyxx client used for getting a message when dispatching a message.
   late NyxxRest _nyxxClient;
+
+  /// Default prefix, utilized if prefixHandler is not passed.
   String? prefix;
+
+  /// Function used to determine a prefix for a message.
   late PrefixHandlerFunction _prefixHandler;
 
+  /// HashSet of all commands Onyx holds. Duplicates are dropped, leaving the original command.
   HashSet<Command> commands = HashSet();
 
   /// Creates Onyx with the NyxxRest class for handling the sending of events.
@@ -38,15 +47,19 @@ class Onyx {
     _onyxLogger.info("Onyx is ready.");
   }
 
+  /// Adds a singular command to Onyx.
   void addCommand(Command cmd) {
     commands.add(cmd);
   }
 
+  /// Adds a list of commands to Onyx.
   void addCommandList(List<Command> cmdList) {
     commands.addAll(cmdList);
   }
 
-
+  /// Default handler used if a custom one is not passed upon creation.
+  ///
+  /// Utilizes [prefix] to determine the prefix for a command.
   FutureOr<String?> defaultPrefixHandler(String message) async {
     if(message.startsWith(prefix!)) {
       return prefix!;
@@ -55,6 +68,10 @@ class Onyx {
     }
   }
 
+  /// Dispatches a message to trigger a Command and/or it's Subcommand.
+  ///
+  /// [messagePrefix] can be passed if the prefix has already been determined for
+  /// this specific message.
   Future<void> dispatchMessage(int channelID, int messageID, {String? messagePrefix}) async {
     Message message =
       await _nyxxClient.httpEndpoints.fetchMessage(channelID.toSnowflake(), messageID.toSnowflake());
@@ -110,6 +127,7 @@ class Onyx {
     }
   }
 
+  /// Parses a command from a given Command name.
   Command? _parseCommand(String commandName) {
     if(commands.isEmpty) return null;
 
@@ -123,6 +141,7 @@ class Onyx {
     }
   }
 
+  /// Parses a Subcommand from a given Subcommand name and the parent Command.
   Subcommand? _parseSubcommand(String subCommandName, Command parentCommand) {
     if(parentCommand.subcommands == null) return null;
     if(parentCommand.subcommands!.isEmpty) return null;
