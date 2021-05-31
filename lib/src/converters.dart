@@ -1,7 +1,9 @@
 part of onyx;
 
-class Converter {
-  static RegExp discriminatorRegex = new RegExp(r"#\d{4}$");
+class OnyxConverter {
+  OnyxConverter();
+
+  static RegExp _discriminatorRegex = RegExp(r"#\d{4}$");
 
   static Future<Role?> getSingleRole(NyxxRest client, int guildID,
     {int? roleID, String? roleName}) async {
@@ -15,6 +17,12 @@ class Converter {
 
   static Future<Member?> getGuildMember(NyxxRest client, int guildID,
     {int? memberID, String? memberName}) async {
+      return _getGuildMember(client, guildID, memberID: memberID, memberName: memberName)
+        .catchError((_) => null);
+  }
+
+  static Future<Member?> _getGuildMember(NyxxRest client, int guildID,
+    {int? memberID, String? memberName}) async {
       Member? resultingMember;
       if(memberID != null) {
         resultingMember =
@@ -22,12 +30,12 @@ class Converter {
       }
 
       if(resultingMember == null && memberName != null) {
-        memberName = memberName.replaceFirst(discriminatorRegex, "");
-        Stream<Member> memberStream =
+        memberName = memberName.replaceFirst(_discriminatorRegex, "");
+        Stream<Member> memberStream = await
           client.httpEndpoints.searchGuildMembers(Snowflake(guildID), memberName);
         resultingMember = await memberStream.first;
       }
 
       return resultingMember;
-  }
+    }
 }
