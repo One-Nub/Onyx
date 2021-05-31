@@ -2,6 +2,8 @@ part of onyx;
 
 typedef PrefixHandlerFunction = FutureOr<String?> Function(String);
 
+final _onyxLogger = Logger("Onyx");
+
 class Onyx {
   final _argsRegex = RegExp("'.*?'|\".*?\"|\S+");
 
@@ -20,7 +22,10 @@ class Onyx {
   Onyx(NyxxRest nyxxClient, {this.prefix, PrefixHandlerFunction? prefixHandler}) {
     this._nyxxClient = nyxxClient;
 
-    if(prefix == null && prefixHandler == null) return;
+    if(prefix == null && prefixHandler == null) {
+      _onyxLogger.shout("A prefix or prefixHandler must be defined for Onyx to work!");
+      return;
+    }
 
     if(prefix != null) {
       _prefixHandler = defaultPrefixHandler;
@@ -30,6 +35,7 @@ class Onyx {
       _prefixHandler = prefixHandler;
     }
 
+    _onyxLogger.info("Onyx is ready.");
   }
 
   void addCommand(Command cmd) {
@@ -77,7 +83,7 @@ class Onyx {
         matchingSubcommand = _parseSubcommand(subCmdName, matchingCommand);
     }
 
-    Guild? msgGuild = null;
+    Guild? msgGuild;
     if(message is GuildMessage) {
       msgGuild = await message.guild.getOrDownload();
     }
@@ -95,7 +101,13 @@ class Onyx {
       regexMatchList.forEach((element) => argsList.add(element.group(0)!));
     }
 
-    matchingCommand.commandEntry(context, messageContent, argsList);
+    _onyxLogger.info("Message dispatched to ${matchingCommand.name} ${matchingSubcommand?.name ?? ""}");
+    if(matchingSubcommand != null) {
+      matchingSubcommand.commandEntry(context, messageContent, argsList);
+    }
+    else {
+      matchingCommand.commandEntry(context, messageContent, argsList);
+    }
   }
 
   Command? _parseCommand(String commandName) {
