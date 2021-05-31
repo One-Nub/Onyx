@@ -33,7 +33,7 @@ class Onyx {
 
     if(prefix == null && prefixHandler == null) {
       _onyxLogger.shout("A prefix or prefixHandler must be defined for Onyx to work!");
-      return;
+      exit(1);
     }
 
     if(prefix != null) {
