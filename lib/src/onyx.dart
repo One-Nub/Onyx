@@ -105,7 +105,7 @@ class Onyx {
       msgGuild = await message.guild.getOrDownload();
     }
 
-    CommandContext context = CommandContext(message.author, await message.channel.getOrDownload(),
+    CommandContext context = CommandContext(_nyxxClient, message.author, await message.channel.getOrDownload(),
       "$messagePrefix$cmdName ${matchingSubcommand?.name ?? ""}".trim(), msgGuild, message);
 
     //Needed to parse out args list since msgList only splits on spaces.
