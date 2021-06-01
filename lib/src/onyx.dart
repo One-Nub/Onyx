@@ -118,7 +118,11 @@ class Onyx {
       regexMatchList.forEach((element) => argsList.add(element.group(0)!));
     }
 
-    _onyxLogger.info("Message dispatched to ${matchingCommand.name} ${matchingSubcommand?.name ?? ""}");
+    String commandLogString = "Message dispatched to Command: ${matchingCommand.name}";
+    if(matchingSubcommand != null) {
+      commandLogString += ", Subcommand: ${matchingSubcommand.name}";
+    }
+    _onyxLogger.info(commandLogString);
     if(matchingSubcommand != null) {
       matchingSubcommand.commandEntry(context, messageContent, argsList);
     }
