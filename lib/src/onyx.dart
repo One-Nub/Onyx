@@ -76,6 +76,8 @@ class Onyx {
     Message message =
       await _nyxxClient.httpEndpoints.fetchMessage(channelID.toSnowflake(), messageID.toSnowflake());
 
+    TextChannel textChannel = await _nyxxClient.httpEndpoints.fetchChannel(channelID.toSnowflake());
+
     // Get message and parse for prefix. Stop execution if there's no prefix.
     String messageContent = message.content;
     messagePrefix ??= await _prefixHandler(messageContent);
@@ -100,13 +102,14 @@ class Onyx {
         matchingSubcommand = _parseSubcommand(subCmdName, matchingCommand);
     }
 
-    Guild? msgGuild;
-    if(message is GuildMessage) {
-      msgGuild = await message.guild.getOrDownload();
+    Guild? messageGuild;
+    if(textChannel is TextGuildChannel) {
+      messageGuild = await textChannel.guild.getOrDownload();
+      print("downloading guild");
     }
 
     CommandContext context = CommandContext(_nyxxClient, message.author, await message.channel.getOrDownload(),
-      "$messagePrefix$cmdName ${matchingSubcommand?.name ?? ""}".trim(), msgGuild, message);
+      "$messagePrefix$cmdName ${matchingSubcommand?.name ?? ""}".trim(), messageGuild, message);
 
     //Needed to parse out args list since msgList only splits on spaces.
     String finalMessage = message.content.replaceFirst(
