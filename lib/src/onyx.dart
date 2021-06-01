@@ -8,7 +8,7 @@ class Onyx {
   /// Regex used to split string along spaces, single quotes, and double quotes.
   ///
   /// Matches the text inbetween these zones rather than splitting around these zones.
-  final _argsRegex = RegExp("'.*?'|\".*?\"|\S+");
+  final _argsRegex = RegExp("'(.*?)'|\"(.*?)\"|\\S+");
 
   /// Nyxx client used for getting a message when dispatching a message.
   late NyxxRest _nyxxClient;
@@ -112,12 +112,18 @@ class Onyx {
 
     //Needed to parse out args list since msgList only splits on spaces.
     String finalMessage = message.content.replaceFirst(
-        "$messagePrefix$cmdName ${matchingSubcommand?.name ?? ""}", "").trim();
+        ("$messagePrefix$cmdName ${matchingSubcommand?.name ?? ""}").trim(), "");
 
     List<String> argsList = [];
     if(finalMessage.isNotEmpty) {
       List<RegExpMatch> regexMatchList = _argsRegex.allMatches(finalMessage).toList();
-      regexMatchList.forEach((element) => argsList.add(element.group(0)!));
+      regexMatchList.forEach((element) {
+        String finalMatch = element.group(0)!;
+        if(finalMatch.startsWith("'")) finalMatch = element.group(1)!;
+        if(finalMatch.startsWith("\"")) finalMatch = element.group(2)!;
+
+        argsList.add(finalMatch);
+      });
     }
 
     String commandLogString = "Message dispatched to Command: ${matchingCommand.name}";
