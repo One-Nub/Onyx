@@ -105,7 +105,6 @@ class Onyx {
     Guild? messageGuild;
     if(textChannel is TextGuildChannel) {
       messageGuild = await textChannel.guild.getOrDownload();
-      print("downloading guild");
     }
 
     CommandContext context = CommandContext(_nyxxClient, message.author, await message.channel.getOrDownload(),
