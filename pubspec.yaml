@@ -6,4 +6,4 @@ environment:
   sdk: ">=2.13.0 <3.0.0"
 
 dependencies:
-  nyxx: "^2.0.0-rc.5"
+  nyxx: ^2.0.0-rc.6
