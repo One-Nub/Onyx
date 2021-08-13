@@ -1,6 +1,6 @@
-part of onyx;
+import 'package:nyxx/nyxx.dart';
 
-class CommandContext {
+class TextCommandContext {
   final IMessageAuthor author;
 
   final TextChannel channel;
@@ -13,5 +13,5 @@ class CommandContext {
 
   final Message message;
 
-  CommandContext(this.client, this.author, this.channel, this.commandTrigger, this.guild, this.message);
+  TextCommandContext(this.client, this.author, this.channel, this.commandTrigger, this.guild, this.message);
 }

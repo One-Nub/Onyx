@@ -1,4 +1,4 @@
-part of onyx;
+import 'package:nyxx/nyxx.dart';
 
 /// Contains all converters provided in Onyx.
 class OnyxConverter {

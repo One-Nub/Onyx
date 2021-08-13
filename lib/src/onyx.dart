@@ -1,4 +1,13 @@
-part of onyx;
+import 'dart:async';
+import 'dart:collection';
+import 'dart:io';
+
+import 'package:nyxx/nyxx.dart';
+import 'package:logging/logging.dart';
+
+import 'commands/text/text_command.dart';
+import 'commands/text/text_context.dart';
+import 'commands/text/text_subcommand.dart';
 
 typedef PrefixHandlerFunction = FutureOr<String?> Function(String);
 
@@ -20,7 +29,7 @@ class Onyx {
   late PrefixHandlerFunction _prefixHandler;
 
   /// HashSet of all commands Onyx holds. Duplicates are dropped, leaving the original command.
-  HashSet<Command> commands = HashSet();
+  HashSet<TextCommand> commands = HashSet();
 
   /// Creates Onyx with the NyxxRest class for handling the sending of events.
   ///
@@ -48,12 +57,12 @@ class Onyx {
   }
 
   /// Adds a singular command to Onyx.
-  void addCommand(Command cmd) {
+  void addCommand(TextCommand cmd) {
     commands.add(cmd);
   }
 
   /// Adds a list of commands to Onyx.
-  void addCommandList(List<Command> cmdList) {
+  void addCommandList(List<TextCommand> cmdList) {
     commands.addAll(cmdList);
   }
 
@@ -91,11 +100,11 @@ class Onyx {
 
     // Get a matching command.
     String cmdName = msgList.removeAt(0);
-    Command? matchingCommand = _parseCommand(cmdName);
+    TextCommand? matchingCommand = _parseCommand(cmdName);
     if(matchingCommand == null) return;
 
     // Get a matching subcommand
-    Subcommand? matchingSubcommand;
+    TextSubcommand? matchingSubcommand;
     if(msgList.isNotEmpty && matchingCommand.subcommands != null &&
       matchingCommand.subcommands!.isNotEmpty) {
         String subCmdName = msgList.removeAt(0);
@@ -107,7 +116,7 @@ class Onyx {
       messageGuild = await textChannel.guild.getOrDownload();
     }
 
-    CommandContext context = CommandContext(_nyxxClient, message.author, await message.channel.getOrDownload(),
+    TextCommandContext context = TextCommandContext(_nyxxClient, message.author, await message.channel.getOrDownload(),
       "$messagePrefix$cmdName ${matchingSubcommand?.name ?? ""}".trim(), messageGuild, message);
 
     //Needed to parse out args list since msgList only splits on spaces.
@@ -140,7 +149,7 @@ class Onyx {
   }
 
   /// Parses a command from a given Command name.
-  Command? _parseCommand(String commandName) {
+  TextCommand? _parseCommand(String commandName) {
     if(commands.isEmpty) return null;
 
     try {
@@ -154,7 +163,7 @@ class Onyx {
   }
 
   /// Parses a Subcommand from a given Subcommand name and the parent Command.
-  Subcommand? _parseSubcommand(String subCommandName, Command parentCommand) {
+  TextSubcommand? _parseSubcommand(String subCommandName, TextCommand parentCommand) {
     if(parentCommand.subcommands == null) return null;
     if(parentCommand.subcommands!.isEmpty) return null;
 

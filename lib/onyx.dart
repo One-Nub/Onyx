@@ -1,14 +1,12 @@
 library onyx;
 
-import 'dart:async';
-import 'dart:collection';
-import 'dart:io';
+export 'src/commands/slash/slash_command.dart';
+export 'src/commands/slash/slash_option.dart';
 
-import 'package:logging/logging.dart';
-import 'package:nyxx/nyxx.dart';
+export 'src/commands/text/text_command.dart';
+export 'src/commands/text/text_context.dart';
+export 'src/commands/text/text_subcommand.dart';
 
-part 'src/commands.dart';
-part 'src/context.dart';
-part 'src/converters.dart';
-part 'src/onyx.dart';
+export 'src/converters.dart';
+export 'src/onyx.dart';
 
