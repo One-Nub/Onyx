@@ -26,9 +26,7 @@ class SlashEndpoints {
       List<dynamic> rawDataList = response.jsonBody;
 
       if(rawDataList.isNotEmpty) {
-        rawDataList.forEach((element) {
-          cmds.add(Map.from(element));
-         });
+        rawDataList.forEach((element) => cmds.add(element));
       }
     }
 
@@ -58,8 +56,7 @@ class SlashEndpoints {
 
     if(response is HttpResponseSuccess) {
       return response.jsonBody;
-    }
-    else {
+    } else {
       return {};
     }
   }
@@ -82,8 +79,7 @@ class SlashEndpoints {
 
     if(response is HttpResponseSuccess) {
       return response.jsonBody;
-    }
-    else {
+    } else {
       return {};
     }
   }
@@ -127,35 +123,118 @@ class SlashEndpoints {
         }
       }
     }
-    
+
     return resultingList;
   }
 
   // // --------------------- Guild Commands --------------------- //
 
-  // Future<List<ApplicationCommand>> getAllGuildCommands() async {
+  /// Get all guild specific commands for a [guildID].
+  Future<List<JsonData>> getAllGuildCommands(int guildID) async {
+    List<JsonData> guildCmds = [];
+    var response = await restClient.httpEndpoints.sendRawRequest(
+      "/applications/${restClient.app.id}/guilds/$guildID/commands", "GET");
 
-  // }
+    if(response is HttpResponseSuccess) {
+      List<dynamic> rawResponseList = response.jsonBody;
 
-  // Future<ApplicationCommand> createGuildCommand() async {
+      if(rawResponseList.isNotEmpty) {
+        rawResponseList.forEach((element) => guildCmds.add(element));
+      }
+    }
+    return guildCmds;
+  }
 
-  // }
+  /// Create a command that will only in exist in [guildID].
+  ///
+  /// Currently registers relevant command data as well.
+  Future<void> createGuildCommand(SlashCommand command, int guildID) async {
+    var response = await restClient.httpEndpoints.sendRawRequest(
+      "/applications/${restClient.app.id}/guilds/$guildID/commands", "POST", body: command.toJson());
 
-  // Future<ApplicationCommand> getGuildCommand() async {
+    if(response is HttpResponseSuccess) {
+      Snowflake cmdID = Snowflake(int.parse(response.jsonBody["id"]));
 
-  // }
+      command.registerCommandData(cmdID, restClient.app.id, guild_id: Snowflake(guildID));
+    }
+  }
 
-  // Future<ApplicationCommand> editGuildCommand() async {
+  /// Get a singular command based on it's [commandID] for a [guildID].
+  ///
+  /// Returns an empty map in the event the command ID given
+  /// does not exist in the given guild ID.
+  Future<JsonData> getGuildCommand(int commandID, int guildID) async {
+    var response = await restClient.httpEndpoints.sendRawRequest(
+      "/applications/${restClient.app.id}/guilds/$guildID/commands/$commandID", "GET");
 
-  // }
+    if(response is HttpResponseSuccess) {
+      return response.jsonBody;
+    } else {
+      return {};
+    }
+  }
 
-  // Future<bool> deleteGuildCommand() async {
+  /// Edit a guild command. Returns the updated data of the application command object. Empty map will
+  /// be returned if unsuccessful.
+  ///
+  /// Either [command] or a [commandID] is necessary. The ID (if present) set on [command]
+  /// will take precedence over [commandID].
+  Future<JsonData> editGuildCommand(SlashCommand command, int guildID, {int? commandID}) async {
+    //TODO: Implement logging to complain in the event both of these are null.
+    if(commandID == null && command.id == null) return {};
 
-  // }
+    if(command.id != null) commandID = command.id!.id;
 
-  // Future<List<ApplicationCommand>> bulkOverwriteGuildCommands() async {
+    var response = await restClient.httpEndpoints.sendRawRequest(
+      "/applications/${restClient.app.id}/guilds/$guildID/commands/$commandID", "PATCH",
+      body: command.toJson());
 
-  // }
+    if(response is HttpResponseSuccess) {
+      return response.jsonBody;
+    } else {
+      return {};
+    }
+  }
+
+  /// Delete a guild command. Return value based upon if deletion was successful or not.
+  Future<bool> deleteGuildCommand(int commandID, int guildID) async {
+    var response = await restClient.httpEndpoints.sendRawRequest(
+      "/applications/${restClient.app.id}/guilds/$guildID/commands/$commandID", "DELETE");
+
+    if(response is HttpResponseSuccess) {
+      return response.statusCode == 204;
+    } else {
+      return false;
+    }
+  }
+
+  /// Overwrites all guild commands at once.
+  ///
+  /// This will replace the entire guild command list with only the commands present
+  /// in [commands], excluding global commands.
+  Future<List<JsonData>> bulkOverwriteGuildCommands(List<SlashCommand> commands, int guildID) async {
+    //TODO: Further changes will be affected by decision in bulkOverwriteGlobal()
+
+    List<JsonData> resultingList = [];
+
+    var response = await restClient.httpEndpoints.sendRawRequest(
+      "/applications/${restClient.app.id}/guilds/$guildID/commands", "PUT", body: jsonEncode(commands));
+
+    if(response is HttpResponseSuccess) {
+      List<dynamic> rawResponse = response.jsonBody;
+
+      if(rawResponse.isNotEmpty) {
+        for(JsonData rawCommand in rawResponse) {
+          SlashCommand thisCommand = commands.firstWhere(
+            (element) => element.name == rawCommand["name"]);
+          thisCommand.registerCommandData(Snowflake(int.parse(rawCommand["id"])),
+            restClient.app.id, guild_id: Snowflake(guildID));
+        }
+      }
+    }
+
+    return resultingList;
+  }
 
   // // --------------------- Guild Command Permissions --------------------- //
 }
