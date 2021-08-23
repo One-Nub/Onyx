@@ -22,7 +22,7 @@ Futhermore, Nyxx's Commander does not support the NyxxRest client at all which m
 
 Finally, I made this just for a project to do, because programming is neat.
 
-
+---
 # Usage
 >**Key note:** *Onyx does not provide any way to automatically receive data.* <br>
 What this means is that you will have to manually obtain and dispatch an event to a method within Onyx. This can be done using the gateway events, or any other custom solution, as long as Onyx is given the proper data.
