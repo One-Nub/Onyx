@@ -1,6 +1,7 @@
 import 'package:nyxx/nyxx.dart' show Snowflake;
 
 import 'slash_option.dart';
+import 'slash_permissions.dart';
 
 /// Base slash command, used to create commands that will then be registered on discord.
 ///
@@ -82,10 +83,13 @@ mixin ApplicationCommand {
   }
 }
 
-
+/// Types of a slash command that can exist.
 enum SlashCommandType {
+  /// Command triggered via chat with a "/".
   chat,
+  /// Command found in the right click menu of a user.
   user,
+  /// Command found in the right click menu of a command.
   message
 }
 

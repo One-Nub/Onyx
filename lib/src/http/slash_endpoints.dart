@@ -1,7 +1,9 @@
 import 'dart:convert' show jsonEncode;
 
-import 'package:nyxx/nyxx.dart' show NyxxRest, HttpResponseSuccess, Snowflake;
-import 'package:onyx/onyx.dart';
+import 'package:nyxx/nyxx.dart' show NyxxRest, HttpResponseSuccess, Snowflake, HttpResponseError;
+
+import '../commands/slash/slash_command.dart';
+import '../commands/slash/slash_permissions.dart';
 
 typedef JsonData = Map<String, dynamic>;
 
@@ -236,5 +238,82 @@ class SlashEndpoints {
     return resultingList;
   }
 
-  // // --------------------- Guild Command Permissions --------------------- //
+  // --------------------- Guild Command Permissions --------------------- //
+
+  /// Get all permissions set for all commands (if any) in [guildID].
+  Future<List<JsonData>> getAllGuildCommandPermissions(int guildID) async {
+    List<JsonData> resultingList = [];
+
+    var response = await restClient.httpEndpoints.sendRawRequest(
+      "/applications/${restClient.app.id}/guilds/$guildID/commands/permissions", "GET");
+
+    if(response is HttpResponseSuccess) {
+      List<dynamic> responseData = response.jsonBody;
+
+      if(responseData.isNotEmpty) {
+        responseData.forEach((element) => resultingList.add(element));
+      }
+    }
+
+    return resultingList;
+  }
+
+  /// Get the current permissions for [commandID] in [guildID].
+  Future<JsonData> getGuildCommandPermissions(int guildID, int commandID) async {
+    var response = await restClient.httpEndpoints.sendRawRequest(
+      "/applications/${restClient.app.id}/guilds/$guildID/commands/$commandID/permissions", "GET");
+
+    if(response is HttpResponseSuccess) {
+      return response.jsonBody;
+    } else {
+      return {};
+    }
+  }
+
+  /// Overwrite [permissions] for [commandID] in [guildID]. At most 10 permission
+  /// overrides can be set on a single command in a guild.
+  Future<JsonData> editGuildCommandPermissions(
+    int guildID,
+    int commandID,
+    List<SlashPermission> permissions) async {
+
+      List<JsonData> permissionData = [];
+      permissions.forEach((element) => permissionData.add(element.toJson()));
+
+      var response = await restClient.httpEndpoints.sendRawRequest(
+      "/applications/${restClient.app.id}/guilds/$guildID/commands/$commandID/permissions", "PUT",
+      body: {
+        "permissions": permissionData
+      });
+
+      if(response is HttpResponseSuccess) {
+        return response.jsonBody;
+      } else {
+        print(response);
+        return {};
+      }
+  }
+
+  /// Edits permissions for all commands in [guildID] (via override). Commands with
+  /// no permission data set in [permissions] will have their permissions cleared.
+  Future<List<JsonData>> editAllGuildCommandPermissions(
+    int guildID,
+    List<GuildCommandPermissions> permissions) async {
+      List<JsonData> partialData = [];
+      permissions.forEach((element) => partialData.add(element.buildPartial()));
+
+      var response = await restClient.httpEndpoints.sendRawRequest(
+        "/applications/${restClient.app.id}/guilds/$guildID/commands/permissions", "PUT",
+        body: jsonEncode(partialData));
+
+      if(response is HttpResponseSuccess) {
+        // reponse.jsonBody is List<dynamic>, not List<JsonData> so
+        // spreading values into a properly typed list works.
+        List<JsonData> output = [...response.jsonBody];
+        return output;
+      } else {
+        response = response as HttpResponseError;
+        return [];
+      }
+  }
 }
