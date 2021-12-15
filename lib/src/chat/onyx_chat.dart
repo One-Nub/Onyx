@@ -5,9 +5,9 @@ import 'dart:io';
 import 'package:nyxx/nyxx.dart';
 import 'package:logging/logging.dart';
 
-import 'commands/text/text_command.dart';
-import 'commands/text/text_context.dart';
-import 'commands/text/text_subcommand.dart';
+import 'structures/text_command.dart';
+import 'structures/text_context.dart';
+import 'structures/text_subcommand.dart';
 
 typedef PrefixHandlerFunction = FutureOr<String?> Function(String);
 
