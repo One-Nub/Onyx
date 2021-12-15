@@ -2,8 +2,8 @@ import 'dart:convert' show jsonEncode;
 
 import 'package:nyxx/nyxx.dart' show NyxxRest, HttpResponseSuccess, Snowflake, HttpResponseError;
 
-import '../commands/slash/slash_command.dart';
-import '../commands/slash/slash_permissions.dart';
+import '../application/structures/slash_command.dart';
+import '../application/structures/slash_permissions.dart';
 
 typedef JsonData = Map<String, dynamic>;
 

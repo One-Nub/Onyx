@@ -1,9 +1,9 @@
 name: onyx
 version: 0.1.0
-description: "Command handler based around nyxx rest"
+description: "Discord command handler based around functioning with Nyxx's Rest implementation."
 
 environment:
   sdk: ">=2.13.0 <3.0.0"
 
 dependencies:
-  nyxx: ^2.0.0-rc.6
+  nyxx: ^2.1.2
