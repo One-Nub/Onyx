@@ -102,12 +102,9 @@ class SlashEndpoints {
   ///
   /// Any command not included will be removed, any commands with matching names
   /// will be overridden with the one sent from here. Send an empty array to
-  /// delete all global commands. A list of the commands that were made/overridden
+  /// delete all global commands. A raw list of the commands that were made/overridden
   /// will be returned.
   Future<List<JsonData>> bulkOverwriteGlobalCommands(List<SlashCommand> commands) async {
-    //TODO: Decide if the endpoints class should handle registering info to command
-    // or to abstract that out to OnyxSlash. For now this will handle that.
-
     List<JsonData> resultingList = [];
 
     var response = await restClient.httpEndpoints.sendRawRequest(
@@ -117,11 +114,10 @@ class SlashEndpoints {
       List<dynamic> rawResponse = response.jsonBody;
 
       if(rawResponse.isNotEmpty) {
+        // Response is a list of command objects.
         for(JsonData rawCommand in rawResponse) {
-          SlashCommand thisCommand = commands.firstWhere(
-            (element) => element.name == rawCommand["name"]);
-          thisCommand.registerCommandData(Snowflake(int.parse(rawCommand["id"])),
-            restClient.app.id);
+          // Data registration is left to OnyxSlash or the user.
+          resultingList.add(rawCommand);
         }
       }
     }

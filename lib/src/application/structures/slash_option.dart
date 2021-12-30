@@ -5,9 +5,15 @@ class SlashOption {
   bool optionRequired;
   List<SlashOptionChoice>? choices;
   List<SlashOption>? options;
+  List<int>? channelTypes;
+  dynamic minValue;
+  dynamic maxValue;
+  bool autocomplete;
 
-  SlashOption(this.type, this.name, this.description, 
-    {this.optionRequired = false, this.choices, this.options});
+
+  SlashOption(this.type, this.name, this.description,
+    {this.optionRequired = false, this.choices, this.options, this.channelTypes,
+     this.minValue, this.maxValue, this.autocomplete = false});
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> data = {
@@ -33,7 +39,7 @@ class SlashOption {
       options?.forEach((option) {
         optionsList.add(option.toJson());
       });
-      
+
       data["options"] = optionsList;
     }
 
