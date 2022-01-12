@@ -4,7 +4,7 @@ import '../http/slash_endpoints.dart';
 import 'structures/slash_command.dart';
 
 class OnyxSlash {
-  late NyxxRest _nyxxClient;
+  late INyxxRest _nyxxClient;
   late SlashEndpoints rawHttpClient;
   List<SlashCommand> globalCommandsList = [];
 

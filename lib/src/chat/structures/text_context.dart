@@ -3,15 +3,15 @@ import 'package:nyxx/nyxx.dart';
 class TextCommandContext {
   final IMessageAuthor author;
 
-  final TextChannel channel;
+  final ITextChannel channel;
 
-  final NyxxRest client;
+  final INyxxRest client;
 
   final String commandTrigger;
 
-  final Guild? guild;
+  final IGuild? guild;
 
-  final Message message;
+  final IMessage message;
 
   TextCommandContext(this.client, this.author, this.channel, this.commandTrigger, this.guild, this.message);
 }

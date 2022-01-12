@@ -1,4 +1,7 @@
 import 'package:nyxx/nyxx.dart';
+import 'package:nyxx/src/core/user/member.dart';
+import 'package:nyxx/src/core/user/user.dart';
+import 'package:nyxx/src/core/message/message.dart';
 
 import 'interaction_data.dart';
 
@@ -9,11 +12,11 @@ class Interaction {
   InteractionData? data;
   Snowflake? guild_id;
   Snowflake? channel_id;
-  Member? member;
-  User? user;
+  IMember? member;
+  IUser? user;
   late String token;
   late int version;
-  Message? message;
+  IMessage? message;
 
   Interaction(this.id, this.application_id, this.type, this.data, this.guild_id, this.channel_id, this.member, this.user, this.token, this.version, this.message);
 
@@ -31,14 +34,14 @@ class Interaction {
     }
 
     if(payload.containsKey("member")) {
-      this.member = EntityUtility.createGuildMember(client, guild_id!, payload["member"]);
+      this.member = Member(client, payload["member"], guild_id!);
     }
     else if(payload.containsKey("user")) {
-      this.user = EntityUtility.createUser(client, payload["user"]);
+      this.user = User(client, payload["user"]);
     }
 
     if(payload.containsKey("message")) {
-      this.message = EntityUtility.createMessage(client, payload["message"]);
+      this.message = Message(client, payload["message"]);
     }
   }
 }

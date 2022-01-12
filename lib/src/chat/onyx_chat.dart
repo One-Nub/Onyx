@@ -20,7 +20,7 @@ class Onyx {
   final _argsRegex = RegExp("'(.*?)'|\"(.*?)\"|\\S+");
 
   /// Nyxx client used for getting a message when dispatching a message.
-  late NyxxRest _nyxxClient;
+  late INyxxRest _nyxxClient;
 
   /// Default prefix, utilized if prefixHandler is not passed.
   String? prefix;
@@ -37,7 +37,7 @@ class Onyx {
   /// the message received. A `prefix` or a `prefixHandler` function are required
   /// for using Onyx. `prefixHandler` takes precedence over `prefix` if both are
   /// passed.
-  Onyx(NyxxRest nyxxClient, {this.prefix, PrefixHandlerFunction? prefixHandler}) {
+  Onyx(INyxxRest nyxxClient, {this.prefix, PrefixHandlerFunction? prefixHandler}) {
     this._nyxxClient = nyxxClient;
 
     if(prefix == null && prefixHandler == null) {
@@ -82,10 +82,10 @@ class Onyx {
   /// [messagePrefix] can be passed if the prefix has already been determined for
   /// this specific message.
   Future<void> dispatchMessage(int channelID, int messageID, {String? messagePrefix}) async {
-    Message message =
+    IMessage message =
       await _nyxxClient.httpEndpoints.fetchMessage(channelID.toSnowflake(), messageID.toSnowflake());
 
-    TextChannel textChannel = await _nyxxClient.httpEndpoints.fetchChannel(channelID.toSnowflake());
+    ITextChannel textChannel = await _nyxxClient.httpEndpoints.fetchChannel(channelID.toSnowflake());
 
     // Get message and parse for prefix. Stop execution if there's no prefix.
     String messageContent = message.content;
@@ -111,8 +111,8 @@ class Onyx {
         matchingSubcommand = _parseSubcommand(subCmdName, matchingCommand);
     }
 
-    Guild? messageGuild;
-    if(textChannel is TextGuildChannel) {
+    IGuild? messageGuild;
+    if(textChannel is ITextGuildChannel) {
       messageGuild = await textChannel.guild.getOrDownload();
     }
 
