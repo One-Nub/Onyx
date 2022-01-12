@@ -1,3 +1,5 @@
+import 'package:nyxx/nyxx.dart' show ChannelType;
+
 class SlashOption {
   SlashOptionType type;
   String name;
@@ -5,7 +7,7 @@ class SlashOption {
   bool optionRequired;
   List<SlashOptionChoice>? choices;
   List<SlashOption>? options;
-  List<int>? channelTypes;
+  List<ChannelType>? channelTypes;
   dynamic minValue;
   dynamic maxValue;
   bool autocomplete;
@@ -17,10 +19,11 @@ class SlashOption {
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> data = {
+      "type": type.value,
       "name": name,
       "description": description,
-      "type": type.value,
-      "required": optionRequired
+      "required": optionRequired,
+      "autcomplete": autocomplete
     };
 
     if(choices != null) {
@@ -41,6 +44,23 @@ class SlashOption {
       });
 
       data["options"] = optionsList;
+    }
+
+    if(channelTypes != null) {
+      List<int> channelTypeList = [];
+      channelTypes?.forEach((element) {
+        channelTypeList.add(element.value);
+      });
+
+      data["channel_types"] = channelTypeList;
+    }
+
+    if(minValue != null) {
+      data["min_value"] = minValue;
+    }
+
+    if(maxValue != null) {
+      data["max_value"] = maxValue;
     }
 
     return data;
