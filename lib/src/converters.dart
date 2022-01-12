@@ -13,7 +13,7 @@ class OnyxConverter {
   /// [debug] is used for determining the error if a role cannot be gotten. When it is
   /// true, `try, catch` the method or else it will terminate the execution of the method
   /// it is called inside.
-  static Future<Role?> getSingleRole(NyxxRest client, int guildID,
+  static Future<IRole?> getSingleRole(INyxxRest client, int guildID,
     {int? roleID, String? roleName, bool debug: false}) async {
       if(roleID == null && roleName == null) return null;
 
@@ -30,10 +30,10 @@ class OnyxConverter {
   /// since if it was all in the public method, it would not be possible
   /// to return null from the stream. This is due to non-nullable syntax on returning
   /// elements from an error case not allowing null as a value.
-  static Future<Role?> _getSingleRole(NyxxRest client, int guildID,
+  static Future<IRole?> _getSingleRole(INyxxRest client, int guildID,
     {int? roleID, String? roleName}) async {
-      Stream<Role> roleStream = client.httpEndpoints.fetchGuildRoles(Snowflake(guildID));
-      Role? resultingRole = await roleStream.firstWhere((element) {
+      Stream<IRole> roleStream = client.httpEndpoints.fetchGuildRoles(Snowflake(guildID));
+      IRole? resultingRole = await roleStream.firstWhere((element) {
         return element.id == roleID || element.name == roleName;
       });
 
@@ -47,7 +47,7 @@ class OnyxConverter {
   /// [debug] is used for determining the error if a Member cannot be gotten. When it is
   /// true, `try, catch` the method or else it will terminate the execution of the method
   /// it is called inside.
-  static Future<Member?> getGuildMember(NyxxRest client, int guildID,
+  static Future<IMember?> getGuildMember(INyxxRest client, int guildID,
     {int? memberID, String? memberName, bool debug: false}) async {
       if(memberID == null && memberName == null) return null;
 
@@ -66,9 +66,9 @@ class OnyxConverter {
   /// since if it was all in the public method, it would not be possible
   /// to return null from the stream. This is due to non-nullable syntax on returning
   /// elements from an error case not allowing null as a value.
-  static Future<Member?> _getGuildMember(NyxxRest client, int guildID,
+  static Future<IMember?> _getGuildMember(INyxxRest client, int guildID,
     {int? memberID, String? memberName}) async {
-      Member? resultingMember;
+      IMember? resultingMember;
       if(memberID != null) {
         resultingMember =
           await client.httpEndpoints.fetchGuildMember(Snowflake(guildID), Snowflake(memberID));
@@ -76,7 +76,7 @@ class OnyxConverter {
 
       if(resultingMember == null && memberName != null) {
         memberName = memberName.replaceFirst(_discriminatorRegex, "");
-        Stream<Member> memberStream = await
+        Stream<IMember> memberStream = await
           client.httpEndpoints.searchGuildMembers(Snowflake(guildID), memberName);
         resultingMember = await memberStream.first;
       }

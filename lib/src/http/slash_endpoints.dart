@@ -1,6 +1,7 @@
 import 'dart:convert' show jsonEncode;
 
-import 'package:nyxx/nyxx.dart' show NyxxRest, HttpResponseSuccess, Snowflake, HttpResponseError;
+// Library has a typo in "IHttpResponseSucess"
+import 'package:nyxx/nyxx.dart' show INyxxRest, IHttpResponseSucess, Snowflake, IHttpResponseError;
 
 import '../application/structures/slash_command.dart';
 import '../application/structures/slash_permissions.dart';
@@ -10,7 +11,7 @@ typedef JsonData = Map<String, dynamic>;
 /// Provides direct access to the slash command endpoints. OnyxSlash contains
 /// additional extension methods alongside these endpoints.
 class SlashEndpoints {
-  NyxxRest restClient;
+  INyxxRest restClient;
 
   SlashEndpoints(this.restClient);
 
@@ -23,8 +24,8 @@ class SlashEndpoints {
     var response = await restClient.httpEndpoints.sendRawRequest(
       "/applications/${restClient.app.id}/commands", "GET");
 
-    if (response.runtimeType == HttpResponseSuccess) {
-      response = response as HttpResponseSuccess;
+    if (response.runtimeType == IHttpResponseSucess) {
+      response = response as IHttpResponseSucess;
       List<dynamic> rawDataList = response.jsonBody;
 
       if(rawDataList.isNotEmpty) {
@@ -42,7 +43,7 @@ class SlashEndpoints {
     var response = await restClient.httpEndpoints.sendRawRequest(
       "/applications/${restClient.app.id}/commands", "POST", body: command.toJson());
 
-    if(response is HttpResponseSuccess) {
+    if(response is IHttpResponseSucess) {
       Snowflake cmdID = Snowflake(int.parse(response.jsonBody["id"]));
 
       command.registerCommandData(cmdID, restClient.app.id);
@@ -56,7 +57,7 @@ class SlashEndpoints {
     var response = await restClient.httpEndpoints.sendRawRequest(
       "/applications/${restClient.app.id}/commands/$commandID", "GET");
 
-    if(response is HttpResponseSuccess) {
+    if(response is IHttpResponseSucess) {
       return response.jsonBody;
     } else {
       return {};
@@ -79,7 +80,7 @@ class SlashEndpoints {
       "/applications/${restClient.app.id}/commands/$commandID", "PATCH",
       body: command.toJson());
 
-    if(response is HttpResponseSuccess) {
+    if(response is IHttpResponseSucess) {
       return response.jsonBody;
     } else {
       return {};
@@ -91,7 +92,7 @@ class SlashEndpoints {
     var response = await restClient.httpEndpoints.sendRawRequest(
       "/applications/${restClient.app.id}/commands/$commandID", "DELETE");
 
-    if(response is HttpResponseSuccess) {
+    if(response is IHttpResponseSucess) {
       return response.statusCode == 204;
     } else {
       return false;
@@ -110,7 +111,7 @@ class SlashEndpoints {
     var response = await restClient.httpEndpoints.sendRawRequest(
       "/applications/${restClient.app.id}/commands", "PUT", body: jsonEncode(commands));
 
-    if(response is HttpResponseSuccess) {
+    if(response is IHttpResponseSucess) {
       List<dynamic> rawResponse = response.jsonBody;
 
       if(rawResponse.isNotEmpty) {
@@ -133,7 +134,7 @@ class SlashEndpoints {
     var response = await restClient.httpEndpoints.sendRawRequest(
       "/applications/${restClient.app.id}/guilds/$guildID/commands", "GET");
 
-    if(response is HttpResponseSuccess) {
+    if(response is IHttpResponseSucess) {
       List<dynamic> rawResponseList = response.jsonBody;
 
       if(rawResponseList.isNotEmpty) {
@@ -150,7 +151,7 @@ class SlashEndpoints {
     var response = await restClient.httpEndpoints.sendRawRequest(
       "/applications/${restClient.app.id}/guilds/$guildID/commands", "POST", body: command.toJson());
 
-    if(response is HttpResponseSuccess) {
+    if(response is IHttpResponseSucess) {
       Snowflake cmdID = Snowflake(int.parse(response.jsonBody["id"]));
 
       command.registerCommandData(cmdID, restClient.app.id, guild_id: Snowflake(guildID));
@@ -165,7 +166,7 @@ class SlashEndpoints {
     var response = await restClient.httpEndpoints.sendRawRequest(
       "/applications/${restClient.app.id}/guilds/$guildID/commands/$commandID", "GET");
 
-    if(response is HttpResponseSuccess) {
+    if(response is IHttpResponseSucess) {
       return response.jsonBody;
     } else {
       return {};
@@ -187,7 +188,7 @@ class SlashEndpoints {
       "/applications/${restClient.app.id}/guilds/$guildID/commands/$commandID", "PATCH",
       body: command.toJson());
 
-    if(response is HttpResponseSuccess) {
+    if(response is IHttpResponseSucess) {
       return response.jsonBody;
     } else {
       return {};
@@ -199,7 +200,7 @@ class SlashEndpoints {
     var response = await restClient.httpEndpoints.sendRawRequest(
       "/applications/${restClient.app.id}/guilds/$guildID/commands/$commandID", "DELETE");
 
-    if(response is HttpResponseSuccess) {
+    if(response is IHttpResponseSucess) {
       return response.statusCode == 204;
     } else {
       return false;
@@ -218,7 +219,7 @@ class SlashEndpoints {
     var response = await restClient.httpEndpoints.sendRawRequest(
       "/applications/${restClient.app.id}/guilds/$guildID/commands", "PUT", body: jsonEncode(commands));
 
-    if(response is HttpResponseSuccess) {
+    if(response is IHttpResponseSucess) {
       List<dynamic> rawResponse = response.jsonBody;
 
       if(rawResponse.isNotEmpty) {
@@ -243,7 +244,7 @@ class SlashEndpoints {
     var response = await restClient.httpEndpoints.sendRawRequest(
       "/applications/${restClient.app.id}/guilds/$guildID/commands/permissions", "GET");
 
-    if(response is HttpResponseSuccess) {
+    if(response is IHttpResponseSucess) {
       List<dynamic> responseData = response.jsonBody;
 
       if(responseData.isNotEmpty) {
@@ -259,7 +260,7 @@ class SlashEndpoints {
     var response = await restClient.httpEndpoints.sendRawRequest(
       "/applications/${restClient.app.id}/guilds/$guildID/commands/$commandID/permissions", "GET");
 
-    if(response is HttpResponseSuccess) {
+    if(response is IHttpResponseSucess) {
       return response.jsonBody;
     } else {
       return {};
@@ -282,7 +283,7 @@ class SlashEndpoints {
         "permissions": permissionData
       });
 
-      if(response is HttpResponseSuccess) {
+      if(response is IHttpResponseSucess) {
         return response.jsonBody;
       } else {
         print(response);
@@ -302,13 +303,13 @@ class SlashEndpoints {
         "/applications/${restClient.app.id}/guilds/$guildID/commands/permissions", "PUT",
         body: jsonEncode(partialData));
 
-      if(response is HttpResponseSuccess) {
+      if(response is IHttpResponseSucess) {
         // reponse.jsonBody is List<dynamic>, not List<JsonData> so
         // spreading values into a properly typed list works.
         List<JsonData> output = [...response.jsonBody];
         return output;
       } else {
-        response = response as HttpResponseError;
+        response = response as IHttpResponseError;
         return [];
       }
   }
