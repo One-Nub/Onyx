@@ -13,7 +13,7 @@ typedef PrefixHandlerFunction = FutureOr<String?> Function(String);
 
 final _onyxLogger = Logger("Onyx");
 
-class Onyx {
+class OnyxChat {
   /// Regex used to split string along spaces, single quotes, and double quotes.
   ///
   /// Matches the text inbetween these zones rather than splitting around these zones.
@@ -37,7 +37,7 @@ class Onyx {
   /// the message received. A `prefix` or a `prefixHandler` function are required
   /// for using Onyx. `prefixHandler` takes precedence over `prefix` if both are
   /// passed.
-  Onyx(INyxxRest nyxxClient, {this.prefix, PrefixHandlerFunction? prefixHandler}) {
+  OnyxChat (INyxxRest nyxxClient, {this.prefix, PrefixHandlerFunction? prefixHandler}) {
     this._nyxxClient = nyxxClient;
 
     if(prefix == null && prefixHandler == null) {
