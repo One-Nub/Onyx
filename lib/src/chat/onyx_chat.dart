@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'dart:io';
 
 import 'package:nyxx/nyxx.dart';
+import 'package:nyxx/src/core/message/message.dart';
 import 'package:logging/logging.dart';
 
 import 'structures/text_command.dart';
@@ -31,7 +32,7 @@ class OnyxChat {
   /// HashSet of all commands Onyx holds. Duplicates are dropped, leaving the original command.
   HashSet<TextCommand> commands = HashSet();
 
-  /// Creates Onyx with the NyxxRest class for handling the sending of events.
+  /// Creates OnyxChat with the NyxxRest class for handling the sending of events.
   ///
   /// User needs to dispatch messages manually to [dispatchMessage] as the ID of
   /// the message received. A `prefix` or a `prefixHandler` function are required
@@ -77,18 +78,29 @@ class OnyxChat {
     }
   }
 
-  /// Dispatches a message to trigger a Command and/or it's Subcommand.
+  /// Dispatches a raw Message object to trigger a Command and/or it's Subcommand.
+  ///
+  /// Utilizes Nyxx's built in Message object to build from raw.
+  /// This then forwards to [dispatchIMessage] once the message has been built.
   ///
   /// [messagePrefix] can be passed if the prefix has already been determined for
   /// this specific message.
-  Future<void> dispatchMessage(int channelID, int messageID, {String? messagePrefix}) async {
-    IMessage message =
-      await _nyxxClient.httpEndpoints.fetchMessage(channelID.toSnowflake(), messageID.toSnowflake());
+  Future<void> dispatchRawMessage(Map<String, dynamic> rawJson, {String? messagePrefix}) async {
+    Message convertedMessage = Message(_nyxxClient, rawJson);
 
-    ITextChannel textChannel = await _nyxxClient.httpEndpoints.fetchChannel(channelID.toSnowflake());
+    this.dispatchIMessage(convertedMessage, messagePrefix: messagePrefix);
+  }
 
-    // Get message and parse for prefix. Stop execution if there's no prefix.
+  /// Dispatches an IMessage to trigger a Command and/or it's Subcommand.
+  ///
+  /// [messagePrefix] can be passed if the prefix has already been determined for
+  /// this specific message.
+  Future<void> dispatchIMessage(IMessage message, {String? messagePrefix}) async {
+    ITextChannel textChannel = await message.channel.getOrDownload();
+
+     // Get message and parse for prefix. Stop execution if there's no prefix.
     String messageContent = message.content;
+    // Determine prefix if not null
     messagePrefix ??= await _prefixHandler(messageContent);
     if(messagePrefix == null) return;
 
@@ -135,7 +147,7 @@ class OnyxChat {
       });
     }
 
-    String commandLogString = "Message dispatched to Command: ${matchingCommand.name}";
+    String commandLogString = "Message dispatching to Command: ${matchingCommand.name}";
     if(matchingSubcommand != null) {
       commandLogString += ", Subcommand: ${matchingSubcommand.name}";
     }
