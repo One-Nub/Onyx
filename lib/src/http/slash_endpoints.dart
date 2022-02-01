@@ -24,8 +24,6 @@ class SlashEndpoints {
     var response = await restClient.httpEndpoints.sendRawRequest(
       "/applications/${restClient.appId}/commands", "GET", auth: true);
 
-    print(response);
-
     if (response.runtimeType == IHttpResponseSucess) {
       response = response as IHttpResponseSucess;
       List<dynamic> rawDataList = response.jsonBody;
@@ -151,7 +149,7 @@ class SlashEndpoints {
   /// Currently registers relevant command data as well.
   Future<void> createGuildCommand(SlashCommand command, int guildID) async {
     var response = await restClient.httpEndpoints.sendRawRequest(
-      "/applications/${restClient.app.id}/guilds/$guildID/commands", "POST", 
+      "/applications/${restClient.app.id}/guilds/$guildID/commands", "POST",
       body: command.toJson(), auth: true);
 
     if(response is IHttpResponseSucess) {
@@ -220,7 +218,7 @@ class SlashEndpoints {
     List<JsonData> resultingList = [];
 
     var response = await restClient.httpEndpoints.sendRawRequest(
-      "/applications/${restClient.app.id}/guilds/$guildID/commands", "PUT", 
+      "/applications/${restClient.app.id}/guilds/$guildID/commands", "PUT",
       body: jsonEncode(commands), auth: true);
 
     if(response is IHttpResponseSucess) {
