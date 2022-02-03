@@ -15,6 +15,11 @@ class OnyxSlash {
     rawHttpClient = SlashEndpoints(_nyxxClient);
   }
 
+  /// Overwrite all commands on a global or guild scale.
+  ///
+  /// Any commands not included in the passed [commands] list will be removed.
+  /// Automatically syncs data for the updated command, so there is no need to
+  /// run [syncCommands] after a bulk overwrite.
   Future<void> bulkOverwrite(List<SlashCommand> commands, {int? guildID}) async {
     List<JsonData> returnedCommands = [];
 
@@ -149,7 +154,38 @@ class OnyxSlash {
   /// or chosen via the passed [commandID]. If [command] is synced and has registered data, it will
   /// override the ID passed by [commandID]. As such, this should preferably be run after
   /// command have been synced via [syncCommands].
-  Future<void> updateCommand(SlashCommand command, {int? guildID, int? commandID}) async {
+  Future<void> editCommand(SlashCommand command, {int? guildID, int? commandID}) async {
+    // Editing commands does not change the command ID, so no need to resync.
+    if (guildID == null) {
+      await rawHttpClient.editGlobalCommand(command, commandID: commandID);
+    } else {
+      await rawHttpClient.editGuildCommand(command, guildID, commandID: commandID);
+    }
+  }
 
+  /// Remove a command listing from the platform either globally or in a [guildID].
+  ///
+  /// It is necessary to either have commands synced, or at least registered with OnyxSlash
+  /// to have this function properly. In the event a [command] is synced, the ID of the
+  /// command will overwrite a passed [commandID].
+  Future<bool> deleteCommand(SlashCommand command, {int? guildID, int? commandID}) async {
+    // Return if no way to know what command to delete... TODO: Complain with logger.
+    if (command.id == null && commandID == null) return false;
+
+    // Use passed SlashCommands ID if not null.
+    if (command.id != null) commandID = command.id!.id;
+
+    if (guildID == null) {
+      commandList.remove(command);
+      return await rawHttpClient.deleteGlobalCommand(commandID!);
+    } else {
+      guildCommandMap[guildID]!.remove(command);
+
+      if (guildCommandMap[guildID]!.isEmpty) {
+        guildCommandMap.remove(guildID);
+      }
+
+      return await rawHttpClient.deleteGuildCommand(commandID!, guildID);
+    }
   }
 }
