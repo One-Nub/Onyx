@@ -65,30 +65,45 @@ class OnyxSlash {
   ///
   /// This does not update or override any commands on the platform, so with the introduction
   /// of a new command, it will need to be added. This simply assigns the proper command
-  /// data with commands in the globalCommandsList. **This should be utilized after commands
-  /// have been added to the globalCommandsList and/or updated in the event of name changes.**
-  Future<void> syncGlobalCommands() async {
-    List<JsonData> rawGlobalCmds = await rawHttpClient.getAllGlobalCommands();
-    if (rawGlobalCmds.length != commandList.length) {
-      //TODO: Adjust to logging implementation and/or throw exception.
-      print("There was a mismatch of the number of global commands and local commands added. "
-       "Make sure you have added all your commands and/or created them globally before syncing.");
-    }
+  /// data with commands in the respective command or guild command list.
+  /// **This should be utilized after commands have been added to the command list
+  /// and/or updated in the event of name changes.**
+  Future<void> syncCommands({int? guildID}) async {
+    if (guildID == null) {
+      List<JsonData> rawGlobalCmds = await rawHttpClient.getAllGlobalCommands();
 
-    for (JsonData rawCommand in rawGlobalCmds) {
-      try {
-        // Get the matching SlashCommand object.
-        SlashCommand cmd = commandList.firstWhere((element) => element.name == rawCommand["name"]);
+      for (JsonData rawCommand in rawGlobalCmds) {
+        try {
+          // Get the matching SlashCommand object.
+          SlashCommand cmd = commandList.firstWhere((element) => element.name == rawCommand["name"]);
 
-        // Register command data.
-        cmd.registerCommandData(Snowflake(int.parse(rawCommand["id"])), _nyxxClient.app.id);
+          // Register command data.
+          cmd.registerCommandData(Snowflake(int.parse(rawCommand["id"])), _nyxxClient.appId);
 
-      } on StateError catch (exception) {
-        //TODO: Adjust to proper logging method when implemented.
-        print("There was an issue getting the matching local command for the global command ${rawCommand["name"]}; "
-        "exception: $exception");
+        } on StateError catch (exception) {
+          //TODO: Adjust to proper logging method when implemented.
+          print("There was an issue getting the matching local command for the global command "
+          "${rawCommand["name"]}; exception: $exception");
 
-        continue;
+          continue;
+        }
+      }
+    } else {
+      List<JsonData> rawGuildCmds = await rawHttpClient.getAllGuildCommands(guildID);
+      List<SlashCommand> guildCommands = guildCommandMap[guildID]!;
+
+      for (JsonData rawGuildCommand in rawGuildCmds) {
+        try {
+          SlashCommand cmd = guildCommands.firstWhere((element) => element.name == rawGuildCommand["name"]);
+          cmd.registerCommandData(Snowflake(int.parse(rawGuildCommand["id"])), _nyxxClient.appId,
+            guild_id: Snowflake(guildID));
+        } on StateError catch (exception) {
+          //TODO: Adjust to proper logging method when implemented.
+          print("There was an issue getting the matching local command for the guild command "
+          "${rawGuildCommand["name"]} in guild $guildID; exception: $exception");
+
+          continue;
+        }
       }
     }
   }
