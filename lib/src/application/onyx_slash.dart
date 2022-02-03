@@ -37,11 +37,15 @@ class OnyxSlash {
 
     if (returnedCommands.isEmpty) return;
 
+    // Register command data.
     if (guildID == null) {
       for (JsonData command in returnedCommands) {
         // Get matching command object
         SlashCommand thisCommand = commandList.firstWhere(
-          (element) => element.name == command["name"]);
+          (element) =>
+            element.name == command["name"] &&
+            element.type.value == int.parse(command["type"])
+          );
 
         // Register data for the command from discord.
         thisCommand.registerCommandData(Snowflake(int.parse(command["id"])),
@@ -52,7 +56,10 @@ class OnyxSlash {
       List<SlashCommand> guildCommandList = guildCommandMap[guildID]!;
       for (JsonData command in returnedCommands) {
         SlashCommand thisCommand = guildCommandList.firstWhere(
-          (element) => element.name == command["name"]);
+          (element) =>
+            element.name == command["name"] &&
+            element.type.value == int.parse(command["type"])
+          );
 
         // Register Discord given data for this command.
         thisCommand.registerCommandData(Snowflake(int.parse(command["id"])),
@@ -75,7 +82,10 @@ class OnyxSlash {
       for (JsonData rawCommand in rawGlobalCmds) {
         try {
           // Get the matching SlashCommand object.
-          SlashCommand cmd = commandList.firstWhere((element) => element.name == rawCommand["name"]);
+          SlashCommand cmd = commandList.firstWhere((element) =>
+            element.name == rawCommand["name"] &&
+            element.type.value == int.parse(rawCommand["type"])
+          );
 
           // Register command data.
           cmd.registerCommandData(Snowflake(int.parse(rawCommand["id"])), _nyxxClient.appId);
@@ -94,7 +104,11 @@ class OnyxSlash {
 
       for (JsonData rawGuildCommand in rawGuildCmds) {
         try {
-          SlashCommand cmd = guildCommands.firstWhere((element) => element.name == rawGuildCommand["name"]);
+          SlashCommand cmd = guildCommands.firstWhere((element) =>
+            element.name == rawGuildCommand["name"] &&
+            element.type.value == int.parse(rawGuildCommand["type"])
+          );
+
           cmd.registerCommandData(Snowflake(int.parse(rawGuildCommand["id"])), _nyxxClient.appId,
             guild_id: Snowflake(guildID));
         } on StateError catch (exception) {
@@ -108,4 +122,34 @@ class OnyxSlash {
     }
   }
 
+  /// Register a local command with Onyx with the option to publish to Discord.
+  ///
+  /// If [publish] is true, the command will be uploaded to discord. It is recommended to only enable it when confident, or else
+  /// the command will be uploaded every time the bot is ran - potentially causing rate limits or other issues. If [guildID] is present,
+  /// the command will be associated directly with a guild, and uploaded as a guild specific command if [publish] is true.
+  Future<void> registerCommand(SlashCommand command, {int? guildID, bool publish = false}) async {
+    if (guildID == null) {
+      commandList.add(command);
+    } else {
+      guildCommandMap.update(guildID, (value) => [...value, command], ifAbsent: () => [command]);
+    }
+
+    if (publish) {
+      if (guildID == null) {
+        await rawHttpClient.createGlobalCommand(command);
+      } else {
+        await rawHttpClient.createGuildCommand(command, guildID);
+      }
+    }
+  }
+
+  /// Update a command on the platform.
+  ///
+  /// Requires that a valid [commandID] exists, which will either be retrieved from [command]
+  /// or chosen via the passed [commandID]. If [command] is synced and has registered data, it will
+  /// override the ID passed by [commandID]. As such, this should preferably be run after
+  /// command have been synced via [syncCommands].
+  Future<void> updateCommand(SlashCommand command, {int? guildID, int? commandID}) async {
+
+  }
 }
