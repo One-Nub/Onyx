@@ -11,7 +11,7 @@ class OnyxSlash {
   List<SlashCommand> commandList = [];
   HashMap<int, List<SlashCommand>> guildCommandMap = HashMap();
 
-  OnyxSlash(this._nyxxClient, List<SlashCommand> commandsList) {
+  OnyxSlash(this._nyxxClient) {
     rawHttpClient = SlashEndpoints(_nyxxClient);
   }
 
@@ -44,7 +44,7 @@ class OnyxSlash {
         SlashCommand thisCommand = commandList.firstWhere(
           (element) =>
             element.name == command["name"] &&
-            element.type.value == int.parse(command["type"])
+            element.type.value == command["type"]
           );
 
         // Register data for the command from discord.
@@ -58,7 +58,7 @@ class OnyxSlash {
         SlashCommand thisCommand = guildCommandList.firstWhere(
           (element) =>
             element.name == command["name"] &&
-            element.type.value == int.parse(command["type"])
+            element.type.value == command["type"]
           );
 
         // Register Discord given data for this command.
@@ -84,7 +84,7 @@ class OnyxSlash {
           // Get the matching SlashCommand object.
           SlashCommand cmd = commandList.firstWhere((element) =>
             element.name == rawCommand["name"] &&
-            element.type.value == int.parse(rawCommand["type"])
+            element.type.value == rawCommand["type"]
           );
 
           // Register command data.
@@ -106,7 +106,7 @@ class OnyxSlash {
         try {
           SlashCommand cmd = guildCommands.firstWhere((element) =>
             element.name == rawGuildCommand["name"] &&
-            element.type.value == int.parse(rawGuildCommand["type"])
+            element.type.value == rawGuildCommand["type"]
           );
 
           cmd.registerCommandData(Snowflake(int.parse(rawGuildCommand["id"])), _nyxxClient.appId,
