@@ -41,12 +41,12 @@ class SlashEndpoints {
   /// Sets the values for command ID and application ID on the [command] object.
   Future<void> createGlobalCommand(SlashCommand command) async {
     var response = await restClient.httpEndpoints.sendRawRequest(
-      "/applications/${restClient.app.id}/commands", "POST", body: command.toJson(), auth: true);
+      "/applications/${restClient.appId}/commands", "POST", body: command.toJson(), auth: true);
 
     if(response is IHttpResponseSucess) {
       Snowflake cmdID = Snowflake(int.parse(response.jsonBody["id"]));
 
-      command.registerCommandData(cmdID, restClient.app.id);
+      command.registerCommandData(cmdID, restClient.appId);
     }
   }
 
@@ -55,7 +55,7 @@ class SlashEndpoints {
   /// An empty map will be returned in the event of an error with sending.
   Future<JsonData> getGlobalCommand(int commandID) async {
     var response = await restClient.httpEndpoints.sendRawRequest(
-      "/applications/${restClient.app.id}/commands/$commandID", "GET", auth: true);
+      "/applications/${restClient.appId}/commands/$commandID", "GET", auth: true);
 
     if(response is IHttpResponseSucess) {
       return response.jsonBody;
@@ -77,7 +77,7 @@ class SlashEndpoints {
     if(command.id != null) commandID = command.id!.id;
 
     var response = await restClient.httpEndpoints.sendRawRequest(
-      "/applications/${restClient.app.id}/commands/$commandID", "PATCH",
+      "/applications/${restClient.appId}/commands/$commandID", "PATCH",
       body: command.toJson(), auth: true);
 
     if(response is IHttpResponseSucess) {
@@ -90,7 +90,7 @@ class SlashEndpoints {
   /// Delete a global command. Returns true upon success.
   Future<bool> deleteGlobalCommand(int commandID) async {
     var response = await restClient.httpEndpoints.sendRawRequest(
-      "/applications/${restClient.app.id}/commands/$commandID", "DELETE", auth: true);
+      "/applications/${restClient.appId}/commands/$commandID", "DELETE", auth: true);
 
     if(response is IHttpResponseSucess) {
       return response.statusCode == 204;
@@ -109,7 +109,7 @@ class SlashEndpoints {
     List<JsonData> resultingList = [];
 
     var response = await restClient.httpEndpoints.sendRawRequest(
-      "/applications/${restClient.app.id}/commands", "PUT", body: jsonEncode(commands), auth: true);
+      "/applications/${restClient.appId}/commands", "PUT", body: jsonEncode(commands), auth: true);
 
     if(response is IHttpResponseSucess) {
       List<dynamic> rawResponse = response.jsonBody;
@@ -132,7 +132,7 @@ class SlashEndpoints {
   Future<List<JsonData>> getAllGuildCommands(int guildID) async {
     List<JsonData> guildCmds = [];
     var response = await restClient.httpEndpoints.sendRawRequest(
-      "/applications/${restClient.app.id}/guilds/$guildID/commands", "GET", auth: true);
+      "/applications/${restClient.appId}/guilds/$guildID/commands", "GET", auth: true);
 
     if(response is IHttpResponseSucess) {
       List<dynamic> rawResponseList = response.jsonBody;
@@ -149,13 +149,13 @@ class SlashEndpoints {
   /// Currently registers relevant command data as well.
   Future<void> createGuildCommand(SlashCommand command, int guildID) async {
     var response = await restClient.httpEndpoints.sendRawRequest(
-      "/applications/${restClient.app.id}/guilds/$guildID/commands", "POST",
+      "/applications/${restClient.appId}/guilds/$guildID/commands", "POST",
       body: command.toJson(), auth: true);
 
     if(response is IHttpResponseSucess) {
       Snowflake cmdID = Snowflake(int.parse(response.jsonBody["id"]));
 
-      command.registerCommandData(cmdID, restClient.app.id, guild_id: Snowflake(guildID));
+      command.registerCommandData(cmdID, restClient.appId, guild_id: Snowflake(guildID));
     }
   }
 
@@ -165,7 +165,7 @@ class SlashEndpoints {
   /// does not exist in the given guild ID.
   Future<JsonData> getGuildCommand(int commandID, int guildID) async {
     var response = await restClient.httpEndpoints.sendRawRequest(
-      "/applications/${restClient.app.id}/guilds/$guildID/commands/$commandID", "GET", auth: true);
+      "/applications/${restClient.appId}/guilds/$guildID/commands/$commandID", "GET", auth: true);
 
     if(response is IHttpResponseSucess) {
       return response.jsonBody;
@@ -186,7 +186,7 @@ class SlashEndpoints {
     if(command.id != null) commandID = command.id!.id;
 
     var response = await restClient.httpEndpoints.sendRawRequest(
-      "/applications/${restClient.app.id}/guilds/$guildID/commands/$commandID", "PATCH",
+      "/applications/${restClient.appId}/guilds/$guildID/commands/$commandID", "PATCH",
       body: command.toJson(), auth: true);
 
     if(response is IHttpResponseSucess) {
@@ -199,7 +199,7 @@ class SlashEndpoints {
   /// Delete a guild command. Return value based upon if deletion was successful or not.
   Future<bool> deleteGuildCommand(int commandID, int guildID) async {
     var response = await restClient.httpEndpoints.sendRawRequest(
-      "/applications/${restClient.app.id}/guilds/$guildID/commands/$commandID", "DELETE", auth: true);
+      "/applications/${restClient.appId}/guilds/$guildID/commands/$commandID", "DELETE", auth: true);
 
     if(response is IHttpResponseSucess) {
       return response.statusCode == 204;
@@ -218,7 +218,7 @@ class SlashEndpoints {
     List<JsonData> resultingList = [];
 
     var response = await restClient.httpEndpoints.sendRawRequest(
-      "/applications/${restClient.app.id}/guilds/$guildID/commands", "PUT",
+      "/applications/${restClient.appId}/guilds/$guildID/commands", "PUT",
       body: jsonEncode(commands), auth: true);
 
     if(response is IHttpResponseSucess) {
@@ -229,7 +229,7 @@ class SlashEndpoints {
           SlashCommand thisCommand = commands.firstWhere(
             (element) => element.name == rawCommand["name"]);
           thisCommand.registerCommandData(Snowflake(int.parse(rawCommand["id"])),
-            restClient.app.id, guild_id: Snowflake(guildID));
+            restClient.appId, guild_id: Snowflake(guildID));
         }
       }
     }
@@ -244,7 +244,7 @@ class SlashEndpoints {
     List<JsonData> resultingList = [];
 
     var response = await restClient.httpEndpoints.sendRawRequest(
-      "/applications/${restClient.app.id}/guilds/$guildID/commands/permissions", "GET", auth: true);
+      "/applications/${restClient.appId}/guilds/$guildID/commands/permissions", "GET", auth: true);
 
     if(response is IHttpResponseSucess) {
       List<dynamic> responseData = response.jsonBody;
@@ -260,7 +260,7 @@ class SlashEndpoints {
   /// Get the current permissions for [commandID] in [guildID].
   Future<JsonData> getGuildCommandPermissions(int guildID, int commandID) async {
     var response = await restClient.httpEndpoints.sendRawRequest(
-      "/applications/${restClient.app.id}/guilds/$guildID/commands/$commandID/permissions", "GET", auth: true);
+      "/applications/${restClient.appId}/guilds/$guildID/commands/$commandID/permissions", "GET", auth: true);
 
     if(response is IHttpResponseSucess) {
       return response.jsonBody;
@@ -280,7 +280,7 @@ class SlashEndpoints {
       permissions.forEach((element) => permissionData.add(element.toJson()));
 
       var response = await restClient.httpEndpoints.sendRawRequest(
-      "/applications/${restClient.app.id}/guilds/$guildID/commands/$commandID/permissions", "PUT",
+      "/applications/${restClient.appId}/guilds/$guildID/commands/$commandID/permissions", "PUT",
       body: {
         "permissions": permissionData
       }, auth: true);
@@ -302,7 +302,7 @@ class SlashEndpoints {
       permissions.forEach((element) => partialData.add(element.buildPartial()));
 
       var response = await restClient.httpEndpoints.sendRawRequest(
-        "/applications/${restClient.app.id}/guilds/$guildID/commands/permissions", "PUT",
+        "/applications/${restClient.appId}/guilds/$guildID/commands/permissions", "PUT",
         body: jsonEncode(partialData), auth: true);
 
       if(response is IHttpResponseSucess) {
