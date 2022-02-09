@@ -172,7 +172,7 @@ class OnyxSlash {
   /// to have this function properly. In the event a [command] is synced, the ID of the
   /// command will overwrite a passed [commandID].
   Future<bool> deleteCommand(SlashCommand command, {int? guildID, int? commandID}) async {
-    // Return if no way to know what command to delete... TODO: Complain with logger.
+    // Return if no way to know what command to delete...
     if (command.id == null && commandID == null) {
       _onyxLog.warning("A command ID is required when attempting to delete commands.");
       return false;
