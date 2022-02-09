@@ -2,6 +2,7 @@ import 'dart:convert' show jsonEncode;
 
 // Library has a typo in "IHttpResponseSucess"
 import 'package:nyxx/nyxx.dart' show INyxxRest, IHttpResponseSucess, Snowflake, IHttpResponseError;
+import 'package:logging/logging.dart';
 
 import '../application/structures/slash_command.dart';
 import '../application/structures/slash_permissions.dart';
@@ -11,6 +12,7 @@ typedef JsonData = Map<String, dynamic>;
 /// Provides direct access to the slash command endpoints. OnyxSlash contains
 /// additional extension methods alongside these endpoints.
 class SlashEndpoints {
+  final Logger _restLog = Logger("Rest-Endpoints");
   INyxxRest restClient;
 
   SlashEndpoints(this.restClient);
@@ -71,8 +73,10 @@ class SlashEndpoints {
   /// In the event that the [SlashCommand] has a valid ID already associated with it,
   /// that ID will override any passed [commandID].
   Future<JsonData> editGlobalCommand(SlashCommand command, {int? commandID}) async {
-    //TODO: Implement logging to complain in the event both of these are null.
-    if(commandID == null && command.id == null) return {};
+    if(commandID == null && command.id == null) {
+      _restLog.warning("A command ID is required when attempting to edit a command.");
+      return {};
+    }
 
     if(command.id != null) commandID = command.id!.id;
 
@@ -180,8 +184,10 @@ class SlashEndpoints {
   /// Either [command] or a [commandID] is necessary. The ID (if present) set on [command]
   /// will take precedence over [commandID].
   Future<JsonData> editGuildCommand(SlashCommand command, int guildID, {int? commandID}) async {
-    //TODO: Implement logging to complain in the event both of these are null.
-    if(commandID == null && command.id == null) return {};
+    if(commandID == null && command.id == null) {
+      _restLog.warning("A command ID is required when attempting to edit a guild command.");
+      return {};
+    }
 
     if(command.id != null) commandID = command.id!.id;
 
@@ -211,10 +217,8 @@ class SlashEndpoints {
   /// Overwrites all guild commands at once.
   ///
   /// This will replace the entire guild command list with only the commands present
-  /// in [commands], excluding global commands.
+  /// in [commands], excluding global commands. Command data is not synced.
   Future<List<JsonData>> bulkOverwriteGuildCommands(List<SlashCommand> commands, int guildID) async {
-    //TODO: Further changes will be affected by decision in bulkOverwriteGlobal()
-
     List<JsonData> resultingList = [];
 
     var response = await restClient.httpEndpoints.sendRawRequest(
@@ -226,10 +230,7 @@ class SlashEndpoints {
 
       if(rawResponse.isNotEmpty) {
         for(JsonData rawCommand in rawResponse) {
-          SlashCommand thisCommand = commands.firstWhere(
-            (element) => element.name == rawCommand["name"]);
-          thisCommand.registerCommandData(Snowflake(int.parse(rawCommand["id"])),
-            restClient.appId, guild_id: Snowflake(guildID));
+          resultingList.add(rawCommand);
         }
       }
     }

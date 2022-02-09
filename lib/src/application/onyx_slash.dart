@@ -1,18 +1,23 @@
 import 'dart:collection';
 
 import 'package:nyxx/nyxx.dart';
+import 'package:logging/logging.dart';
 
 import '../http/slash_endpoints.dart';
 import 'structures/slash_command.dart';
 
 class OnyxSlash {
+  final Logger _onyxLog = Logger("Onyx");
+
   late INyxxRest _nyxxClient;
   late SlashEndpoints rawHttpClient;
+
   List<SlashCommand> commandList = [];
   HashMap<int, List<SlashCommand>> guildCommandMap = HashMap();
 
   OnyxSlash(this._nyxxClient) {
     rawHttpClient = SlashEndpoints(_nyxxClient);
+    _onyxLog.info("OnyxSlash has been started.");
   }
 
   /// Overwrite all commands on a global or guild scale.
@@ -96,8 +101,7 @@ class OnyxSlash {
           cmd.registerCommandData(Snowflake(int.parse(rawCommand["id"])), _nyxxClient.appId);
 
         } on StateError catch (exception) {
-          //TODO: Adjust to proper logging method when implemented.
-          print("There was an issue getting the matching local command for the global command "
+          _onyxLog.severe("There was an issue getting the matching local command for the global command "
           "${rawCommand["name"]}; exception: $exception");
 
           continue;
@@ -117,8 +121,7 @@ class OnyxSlash {
           cmd.registerCommandData(Snowflake(int.parse(rawGuildCommand["id"])), _nyxxClient.appId,
             guild_id: Snowflake(guildID));
         } on StateError catch (exception) {
-          //TODO: Adjust to proper logging method when implemented.
-          print("There was an issue getting the matching local command for the guild command "
+          _onyxLog.severe("There was an issue getting the matching local command for the guild command "
           "${rawGuildCommand["name"]} in guild $guildID; exception: $exception");
 
           continue;
@@ -170,7 +173,10 @@ class OnyxSlash {
   /// command will overwrite a passed [commandID].
   Future<bool> deleteCommand(SlashCommand command, {int? guildID, int? commandID}) async {
     // Return if no way to know what command to delete... TODO: Complain with logger.
-    if (command.id == null && commandID == null) return false;
+    if (command.id == null && commandID == null) {
+      _onyxLog.warning("A command ID is required when attempting to delete commands.");
+      return false;
+    }
 
     // Use passed SlashCommands ID if not null.
     if (command.id != null) commandID = command.id!.id;
