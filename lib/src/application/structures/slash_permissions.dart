@@ -1,3 +1,4 @@
+/// Representation of a single permission for a command.
 class SlashPermission {
   /// ID of a role or user
   int id;
@@ -20,6 +21,7 @@ class SlashPermission {
   }
 }
 
+/// Representation of [SlashPermission]s for a SlashCommand in a guild.
 class GuildCommandPermissions {
   /// ID of the command.
   int command_id;
@@ -67,11 +69,13 @@ class GuildCommandPermissions {
   }
 }
 
+/// Represent the possible types a slash command permission can be applied to.
 enum SlashPermissionType {
   role,
   user
 }
 
+/// Apply values to the specified permission types.
 extension SlashPermissionTypeValues on SlashPermissionType {
   int get value {
     switch(this) {
