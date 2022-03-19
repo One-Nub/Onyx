@@ -2,8 +2,11 @@ import 'dart:collection';
 
 import 'package:nyxx/nyxx.dart';
 import 'package:logging/logging.dart';
+import 'package:onyx/src/interactions/interaction.dart';
 
 import '../http/slash_endpoints.dart';
+import '../interactions/interaction.dart';
+
 import 'structures/slash_command.dart';
 
 class OnyxSlash {
@@ -18,6 +21,61 @@ class OnyxSlash {
   OnyxSlash(this._nyxxClient) {
     rawHttpClient = SlashEndpoints(_nyxxClient);
     _onyxLog.info("OnyxSlash has been started.");
+  }
+
+  void dispatchRawInteraction(JsonData rawData) {
+    this.dispatchInteraction(Interaction.fromRawJson(rawData, this._nyxxClient));
+  }
+
+  void dispatchInteraction(Interaction interaction) {
+    
+    // Check for a guild command first.
+    if (interaction.guild_id != null && guildCommandMap.containsKey(interaction.guild_id!.id)) {
+      // If the guild has a command with a matching id, trigger.
+      List<SlashCommand> dispGuildCmdList = guildCommandMap[interaction.guild_id!.id]!;
+      SlashCommand? matchingGuildCommand = dispGuildCmdList.firstWhereSafe((element) => element.id == interaction.data!.id);
+
+      if (matchingGuildCommand != null) {
+        _onyxLog.info("Dispatching guild interaction \"${interaction.data!.name}\" for guild ${interaction.guild_id}");
+        matchingGuildCommand.commandFunction(interaction);
+        return;
+      }
+    }
+
+    // Check global command list for matching id.
+    SlashCommand? matchingGlobalCmd = commandList.firstWhereSafe((element) => element.id == interaction.data!.id);
+    if (matchingGlobalCmd != null) {
+        _onyxLog.info("Dispatching global interaction \"${interaction.data!.name}\"");
+        matchingGlobalCmd.commandFunction(interaction);
+        return;
+    }
+
+    // Check guild map for matching name of command.
+    if (interaction.guild_id != null && interaction.data != null) {
+      List<SlashCommand> dispGuildCmdList = guildCommandMap[interaction.guild_id!.id]!;
+      SlashCommand? nameMatch = dispGuildCmdList.firstWhereSafe((element) => element.name == interaction.data!.name);
+      if (nameMatch != null) {
+        _onyxLog.info("Dispatching and registering data for guild interaction \"${interaction.data!.name}\" "
+          "for guild ${interaction.guild_id}");
+        nameMatch.commandFunction(interaction);
+        nameMatch.registerCommandData(interaction.data!.id, interaction.application_id, guild_id: interaction.guild_id);
+        return;
+      }
+    }
+
+    // Check global list for matching name of command.
+    if (interaction.data != null) {
+      SlashCommand? matchingNameCmd = commandList.firstWhereSafe((element) => element.name == interaction.data!.name);
+      
+      if (matchingNameCmd != null) {
+        _onyxLog.info("Dispatching and registering data for global interaction \"${interaction.data!.name}\"");
+        matchingNameCmd.commandFunction(interaction);
+        matchingNameCmd.registerCommandData(interaction.data!.id, interaction.application_id);
+        return;
+      }
+    }
+
+    _onyxLog.shout("No matching command was found for the interaction $interaction.");
   }
 
   /// Overwrite all commands on a global or guild scale.

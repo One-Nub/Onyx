@@ -3,6 +3,8 @@ import 'package:nyxx/nyxx.dart' show Snowflake;
 import 'slash_option.dart';
 import 'slash_permissions.dart';
 
+import '../../interactions/interaction.dart';
+
 /// Base slash command, used to create commands that will then be registered on discord.
 ///
 /// This is intended to be used where the user will extend this class, override
@@ -27,7 +29,7 @@ class SlashCommand with ApplicationCommand {
   SlashCommand();
 
   /// This method will be the entry point of the program when a slash command is triggered.
-  Future<void> commandFunction() async {}
+  Future<void> commandFunction(Interaction interaction) async {}
 
   /// Generates json to be sent to Discord when registering a command.
   ///
