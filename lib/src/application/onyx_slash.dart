@@ -2,20 +2,29 @@ import 'dart:collection';
 
 import 'package:nyxx/nyxx.dart';
 import 'package:logging/logging.dart';
-import 'package:onyx/src/interactions/interaction.dart';
 
 import '../http/slash_endpoints.dart';
 import '../interactions/interaction.dart';
 
 import 'structures/slash_command.dart';
 
+/// Main point of utilizing Application Commands with Onyx.
 class OnyxSlash {
   final Logger _onyxLog = Logger("Onyx");
 
   late INyxxRest _nyxxClient;
   late SlashEndpoints rawHttpClient;
 
+  /// List of registered global command handlers.
+  ///
+  /// It is not recommended to add commands to this list manually without using the [registerCommand]
+  /// method provided, but it is possible.
   List<SlashCommand> commandList = [];
+
+  /// HashMap consisting of Guild IDs and Guild command lists for guild specific slash command handlers.
+  ///
+  /// It is not advised to add commands to this without using the [registerCommand] method
+  /// due to the potential confusion factor.
   HashMap<int, List<SlashCommand>> guildCommandMap = HashMap();
 
   OnyxSlash(this._nyxxClient) {
@@ -23,12 +32,21 @@ class OnyxSlash {
     _onyxLog.info("OnyxSlash has been started.");
   }
 
-  void dispatchRawInteraction(JsonData rawData) {
-    this.dispatchInteraction(Interaction.fromRawJson(rawData, this._nyxxClient));
+  /// Dispatch an [Interaction] from raw data returned from the api.
+  ///
+  /// Any desired [metadata] will be passed along the [Interaction] object.
+  void dispatchRawInteraction(JsonData rawData, {dynamic metadata}) {
+    Interaction interaction = Interaction.fromRawJson(rawData, this._nyxxClient);
+    if(metadata != null) {
+      interaction.setMetadata(metadata);
+    }
+
+    this.dispatchInteraction(interaction);
   }
 
+  /// Dispatch an [Interaction] to registered command handlers within Onyx.
   void dispatchInteraction(Interaction interaction) {
-    
+
     // Check for a guild command first.
     if (interaction.guild_id != null && guildCommandMap.containsKey(interaction.guild_id!.id)) {
       // If the guild has a command with a matching id, trigger.
@@ -66,7 +84,7 @@ class OnyxSlash {
     // Check global list for matching name of command.
     if (interaction.data != null) {
       SlashCommand? matchingNameCmd = commandList.firstWhereSafe((element) => element.name == interaction.data!.name);
-      
+
       if (matchingNameCmd != null) {
         _onyxLog.info("Dispatching and registering data for global interaction \"${interaction.data!.name}\"");
         matchingNameCmd.commandFunction(interaction);
