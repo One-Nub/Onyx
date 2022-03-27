@@ -11,3 +11,4 @@ export 'src/http/slash_endpoints.dart';
 
 export 'src/interactions/interaction.dart';
 export 'src/interactions/interaction_data.dart';
+export 'src/interactions/interaction_response.dart';
