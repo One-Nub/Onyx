@@ -3,9 +3,10 @@ import 'package:nyxx/src/core/user/member.dart';
 import 'package:nyxx/src/core/user/user.dart';
 import 'package:nyxx/src/core/message/message.dart';
 
+import '../metadata.dart';
 import 'interaction_data.dart';
 
-class Interaction {
+class Interaction with Metadata {
   late Snowflake id;
   late Snowflake application_id;
   late int type;
