@@ -3,7 +3,7 @@ import 'package:nyxx/nyxx.dart' show Snowflake;
 import 'slash_option.dart';
 import 'slash_permissions.dart';
 
-import '../../interactions/interaction.dart';
+import '../../onyx/interactions/interaction.dart';
 
 /// Base slash command, used to create commands that will then be registered on discord.
 ///
