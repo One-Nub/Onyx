@@ -3,7 +3,7 @@ version: 0.1.0
 description: "Discord command handler based around functioning with Nyxx's Rest implementation."
 
 environment:
-  sdk: ">=2.13.0 <3.0.0"
+  sdk: ">=2.17.0 <3.0.0"
 
 dependencies:
   nyxx: ^3.2.3
