@@ -4,7 +4,7 @@ import 'component_base.dart';
 
 class TextInput implements Component {
   final ComponentType type = ComponentType.text_input;
-  String customID;
+  String custom_id;
   TextInputStyle style;
   String label;
 
@@ -14,13 +14,13 @@ class TextInput implements Component {
   String? defaultValue;
   String? placeholderText;
 
-  TextInput({required this.customID, required this.style, required this.label, this.min_length,
+  TextInput({required this.custom_id, required this.style, required this.label, this.min_length,
     this.max_length, this.requiredField = true, this.defaultValue, this.placeholderText});
 
   JsonData toJson() {
     JsonData finalData = {
       "type": type.value,
-      "custom_id": customID,
+      "custom_id": custom_id,
       "style": style.value,
       "label": label,
       "required": requiredField
