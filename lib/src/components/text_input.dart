@@ -25,7 +25,7 @@ class TextInput implements Component {
       "label": label,
       "required": requiredField
     };
-    
+
     if(min_length != null) finalData["min_length"] = min_length;
 
     if(max_length != null) finalData["max_length"] = max_length;
