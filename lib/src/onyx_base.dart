@@ -4,24 +4,6 @@ import './interactions/interaction_data.dart';
 import './streams.dart';
 
 class Onyx {
-  /// The idea thus far is to:
-  ///   - Register command handlers for all types of app commands (chat input, user, & msg) (2)
-  ///     These will be for overhall handling name -> trigger function.
-  ///     Doesn't really support guild specific commands, but they're supposed to be named uniquely sooo
-  ///
-  ///   - Component interactions (3) will have handler functions, state must be handled by the application.
-  ///     Debating if components should instead be streamed, makes it easier to handle imo.
-  ///     Could do both, first dispatch to method but if there is no method to dispatch to, stream it?
-  ///
-  ///   - Autocomplete interactions (4) will be streamed.
-  ///
-  ///   - Modal submit interactions (5) will be streamed, no way to register a listener bc of custom ids... :T
-  ///
-  ///   The paradigm is that in the case that a command triggers something like a modal or sends a msg with components,
-  ///   it should thus exit the first function and pass to the next. All functionality ends up being like
-  ///   start here, then move there, then move there, etc. except for components, which because they are
-  ///   streamed, can be acted upon within a function.
-
   Map<String, Function> appCommandHandlers = {};
   Map<String, Function> genericComponentHandlers = {};
   Map<String, Function> genericModalHandlers = {};
