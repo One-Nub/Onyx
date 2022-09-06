@@ -1,6 +1,6 @@
 import '../enums.dart';
 import '../typedefs.dart';
-import '../../metadata.dart';
+import '../metadata.dart';
 import 'interaction_data.dart';
 
 class Interaction with Metadata {
@@ -22,10 +22,16 @@ class Interaction with Metadata {
   Interaction(Map<String, dynamic> payload) {
     this.id = BigInt.parse(payload["id"]);
     this.application_id = BigInt.parse(payload["application_id"]);
-    this.type = InteractionType.fromInt(int.parse(payload["type"]));
+    this.type = InteractionType.fromInt(payload["type"]);
 
     if(payload.containsKey("data")) {
-      this.data = InteractionData.fromJson(payload["data"]);
+      if (payload["data"].containsKey("id")) {
+        this.data = ApplicationCommandData.fromJson(payload["data"]);
+      } else if (payload["data"].containsKey("component_type")) {
+        this.data = MessageComponentData.fromJson(payload["data"]);
+      } else if (payload["data"].containsKey("components")) {
+        this.data = ModalSubmitData.fromJson(payload["data"]);
+      }
     }
 
     if (payload["guild_id"] != null) {

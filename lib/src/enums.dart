@@ -38,7 +38,7 @@ enum ButtonStyle {
         return ButtonStyle.secondary;
       case 3:
         return ButtonStyle.success;
-      case 4: 
+      case 4:
         return ButtonStyle.danger;
       case 5:
         return ButtonStyle.link;
