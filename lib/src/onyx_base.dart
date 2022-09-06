@@ -16,7 +16,7 @@ class Onyx {
     if (interaction.type == InteractionType.application_command) {
       ApplicationCommandData? commandData = interaction.data as ApplicationCommandData?;
       if(commandData ==  null) {
-        throw UnimplementedError("The given application command interaction does not contain any data. "
+        throw UnsupportedError("The given application command interaction does not contain any data. "
           "This is unsupported when dispatching.");
       }
 
@@ -30,7 +30,7 @@ class Onyx {
     } else if (interaction.type == InteractionType.message_component) {
       MessageComponentData? componentData = interaction.data as MessageComponentData?;
       if(componentData == null) {
-        throw UnimplementedError("The given message component interaction does not contain any data. "
+        throw UnsupportedError("The given message component interaction does not contain any data. "
           "This is unsupported when dispatching.");
       }
 
@@ -47,7 +47,7 @@ class Onyx {
     } else if (interaction.type == InteractionType.modal_submit) {
       ModalSubmitData? modalData = interaction.data as ModalSubmitData?;
       if(modalData == null) {
-        throw UnimplementedError("The given modal submit interaction does not contain any data. "
+        throw UnsupportedError("The given modal submit interaction does not contain any data. "
           "This is unsupported when dispatching.");
       }
 
@@ -59,7 +59,7 @@ class Onyx {
       }
 
     } else {
-      throw UnimplementedError("The given interaction type of ${interaction.type} is not "
+      throw UnsupportedError("The given interaction type of ${interaction.type} is not "
         "accepted to be dispatched.");
     }
   }
