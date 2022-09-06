@@ -9,5 +9,5 @@ dependencies:
   nyxx: ^3.2.3
 
 dev_dependencies:
-  alfred: ^0.1.5+3
+  alfred: ^0.1.7
   cryptography: ^2.0.5
