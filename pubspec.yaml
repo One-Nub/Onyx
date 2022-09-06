@@ -1,5 +1,5 @@
 name: onyx
-version: 0.1.0
+version: 0.2.0
 description: "Discord command handler based around functioning with Nyxx's Rest implementation."
 
 environment:
