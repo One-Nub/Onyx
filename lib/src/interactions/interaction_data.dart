@@ -1,7 +1,11 @@
 import '../enums.dart';
 import '../typedefs.dart';
 
-/// Just used to be a common base for all implementing classes...
+/// Common base representing for all implementing InteractionData subclasses.
+///
+/// It ended up existing this way since between all interaction data instances there is
+/// no common values within the payload per type.
+/// https://discord.com/developers/docs/interactions/receiving-and-responding#interaction-object-interaction-data
 abstract class InteractionData {}
 
 class ApplicationCommandData implements InteractionData {
