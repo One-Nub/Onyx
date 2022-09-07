@@ -71,19 +71,19 @@ class Interaction with Metadata {
 
   @override
   String toString() {
-    return """Interaction ID: $id
-      \tApplication ID: $application_id
-      \tType: $type:${type.value}
-      \tData: ${data.toString()}
-      \tGuild ID: $guild_id
-      \tChannel ID: $channel_id
-      \tMember: $member
-      \tUser: $user
-      \tToken: $token
-      \tVersion: $version
-      \tMessage: $message
-      \tApp permissions: $app_permissions
-      \tLocale: $locale
-      \tGuild locale: $guild_locale""";
+    return "Interaction ID: $id\n"
+      "Application ID: $application_id\n"
+      "Type: $type:${type.value}\n"
+      "Data: {${data}}\n"
+      "Guild ID: $guild_id\n"
+      "Channel ID: $channel_id\n"
+      "Member: $member\n"
+      "User: $user\n"
+      "Token: $token\n"
+      "Version: $version\n"
+      "Message: $message\n"
+      "App permissions: $app_permissions\n"
+      "Locale: $locale\n"
+      "Guild locale: $guild_locale\n";
   }
 }
