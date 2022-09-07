@@ -4,7 +4,7 @@ import '../typedefs.dart';
 /// Just used to be a common base for all implementing classes...
 abstract class InteractionData {}
 
-class ApplicationCommandData extends InteractionData {
+class ApplicationCommandData implements InteractionData {
   /// Invoked command ID
   late BigInt id;
 
@@ -55,7 +55,7 @@ class ApplicationCommandData extends InteractionData {
   }
 }
 
-class MessageComponentData extends InteractionData {
+class MessageComponentData implements InteractionData {
   /// The custom ID of a modal or message component.
   String? custom_id;
 
@@ -83,7 +83,7 @@ class MessageComponentData extends InteractionData {
   }
 }
 
-class ModalSubmitData extends InteractionData {
+class ModalSubmitData implements InteractionData {
   /// The custom ID of a modal or message component.
   String? custom_id;
 
