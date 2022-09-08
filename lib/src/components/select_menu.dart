@@ -4,13 +4,13 @@ import 'component_base.dart';
 
 class SelectMenu implements Component {
   final ComponentType type = ComponentType.select_menu;
-  String custom_id;
+  late String custom_id;
   late List<SelectMenuOption> options;
 
   String? placeholderText;
   int? min_values;
   int? max_values;
-  bool disabled;
+  late bool disabled;
 
   SelectMenu({required this.custom_id, List<SelectMenuOption>? options, this.placeholderText,
     this.min_values, this.max_values, this.disabled = false}) {
@@ -19,7 +19,26 @@ class SelectMenu implements Component {
       } else {
         this.options = [];
       }
+  }
+
+  SelectMenu.fromJson(JsonData data) {
+    custom_id = data["custom_id"];
+
+    options = [];
+    (data["options"] as List).forEach((element) {
+      options.add(SelectMenuOption.fromJson(element));
+    });
+
+    placeholderText = data["placeholder"];
+    min_values = data["min_values"];
+    max_values = data["max_values"];
+
+    if(data["disabled"] == null) {
+      disabled = false;
+    } else {
+      disabled = data["disabled"];
     }
+  }
 
   void addOption(SelectMenuOption option) => options.add(option);
 
@@ -45,14 +64,22 @@ class SelectMenu implements Component {
 }
 
 class SelectMenuOption {
-  String label;
-  String value;
+  late String label;
+  late String value;
   String? description;
   JsonData? emoji;
   bool? defaultSelection;
 
   SelectMenuOption({required this.label, required this.value, this.description,
     this.emoji, this.defaultSelection});
+
+  SelectMenuOption.fromJson(JsonData data) {
+    label = data["label"];
+    value = data["value"];
+    description = data["description"];
+    emoji = data["emoji"];
+    defaultSelection = data["default"];
+  }
 
   JsonData toJson() {
     JsonData finalData = {"label": label, "value": value};
