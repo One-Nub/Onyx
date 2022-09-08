@@ -20,6 +20,52 @@ enum ApplicationCommandType {
   }
 }
 
+enum ApplicationCommandOptionType {
+  sub_command(1),
+  sub_command_group(2),
+  string(3),
+  integer(4),
+  boolean(5),
+  user(6),
+  channel(7),
+  role(8),
+  mentionable(9),
+  number(10),
+  attachment(11);
+
+  const ApplicationCommandOptionType(this.value);
+  final int value;
+
+  factory ApplicationCommandOptionType.fromInt(int value) {
+    switch(value) {
+      case 1:
+        return ApplicationCommandOptionType.sub_command;
+      case 2:
+        return ApplicationCommandOptionType.sub_command_group;
+      case 3:
+        return ApplicationCommandOptionType.string;
+      case 4:
+        return ApplicationCommandOptionType.integer;
+      case 5:
+        return ApplicationCommandOptionType.boolean;
+      case 6:
+        return ApplicationCommandOptionType.user;
+      case 7:
+        return ApplicationCommandOptionType.channel;
+      case 8:
+        return ApplicationCommandOptionType.role;
+      case 9:
+        return ApplicationCommandOptionType.mentionable;
+      case 10:
+        return ApplicationCommandOptionType.number;
+      case 11:
+        return ApplicationCommandOptionType.attachment;
+      default:
+        throw UnimplementedError("The type $value is not implemented as an application command option type.");
+    }
+  }
+}
+
 enum ButtonStyle {
   primary(1),
   secondary(2),
