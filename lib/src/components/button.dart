@@ -19,7 +19,7 @@ class Button implements Component {
   Button({required this.style, this.label, this.emoji, this.custom_id, this.url, this.disabled = false});
 
   JsonData toJson() {
-    JsonData finalData = {"type": type.value, "disabled": disabled};
+    JsonData finalData = {"type": type.value, "style": style.value, "disabled": disabled};
 
     if(label != null) finalData["label"] = label;
 
