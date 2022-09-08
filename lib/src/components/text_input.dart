@@ -53,4 +53,9 @@ class TextInput implements Component {
 
     return finalData;
   }
+
+  @override
+  String toString() {
+    return "${toJson()}";
+  }
 }

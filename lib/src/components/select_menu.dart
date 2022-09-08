@@ -92,4 +92,9 @@ class SelectMenuOption {
 
     return finalData;
   }
+
+  @override
+  String toString() {
+    return "${toJson()}";
+  }
 }
