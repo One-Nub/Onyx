@@ -22,7 +22,7 @@ class ApplicationCommandData implements InteractionData {
   JsonData? resolved;
 
   /// Parameters & their values from the user.
-  List<dynamic>? options;
+  List<ApplicationCommandOption>? options;
 
   /// ID of the guild the command is registered to.
   BigInt? guild_id;
@@ -36,6 +36,13 @@ class ApplicationCommandData implements InteractionData {
     this.type = ApplicationCommandType.fromInt(payload["type"]);
 
     this.resolved = payload["resolved"];
+
+    if(payload["options"] != null) {
+      options = [];
+      (payload["options"] as List).forEach((element) {
+        options!.add(ApplicationCommandOption.fromJson(element));
+      });
+    }
     this.options = payload["options"];
 
     if(payload["guild_id"] != null) {
@@ -56,6 +63,42 @@ class ApplicationCommandData implements InteractionData {
       "options: $options\n"
       "guild_id: $guild_id\n"
       "target_id: $target_id";
+  }
+}
+
+class ApplicationCommandOption {
+  late String name;
+  late ApplicationCommandOptionType type;
+  dynamic? value;
+  List<ApplicationCommandOption>? options;
+  late bool focused;
+
+  ApplicationCommandOption.fromJson(JsonData payload) {
+    name = payload["name"];
+    type = ApplicationCommandOptionType.fromInt(payload["type"]);
+    value = payload["value"];
+
+    if(payload["options"] != null) {
+      options = [];
+      (payload["options"] as List).forEach((element) {
+        options!.add(ApplicationCommandOption.fromJson(element));
+      });
+    }
+
+    if(payload["focused"] == null) {
+      focused = false;
+    } else {
+      focused = payload["focused"];
+    }
+  }
+
+  @override
+  String toString() {
+    return "name: $name\n"
+      "type: $type\n"
+      "value: $value\n"
+      "options: $options\n"
+      "focused: $focused";
   }
 }
 
