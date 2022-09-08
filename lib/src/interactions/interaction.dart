@@ -84,6 +84,6 @@ class Interaction with Metadata {
       "Message: $message\n"
       "App permissions: $app_permissions\n"
       "Locale: $locale\n"
-      "Guild locale: $guild_locale\n";
+      "Guild locale: $guild_locale";
   }
 }
