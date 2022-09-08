@@ -39,4 +39,9 @@ class ActionRow implements Component {
       "components": componentList
     };
   }
+
+  @override
+  String toString() {
+    return "${toJson()}";
+  }
 }
