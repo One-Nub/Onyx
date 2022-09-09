@@ -43,7 +43,6 @@ class ApplicationCommandData implements InteractionData {
         options!.add(ApplicationCommandOption.fromJson(element));
       });
     }
-    this.options = payload["options"];
 
     if(payload["guild_id"] != null) {
       this.guild_id = BigInt.parse(payload["guild_id"]);
