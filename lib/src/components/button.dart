@@ -14,7 +14,7 @@ class Button implements Component {
 
   /// Create a button following a [style].
   ///
-  /// A [customID] is required for all styles except for a link button, in which case a [url] is
+  /// A [custom_id] is required for all styles except for a link button, in which case a [url] is
   /// required.
   Button({required this.style, this.label, this.emoji, this.custom_id, this.url, this.disabled = false});
 
