@@ -1,4 +1,5 @@
 
+/// The Onyx package, providing application command and interaction management.
 library onyx;
 
 export 'src/components/action_row.dart';
