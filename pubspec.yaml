@@ -8,3 +8,4 @@ environment:
 dev_dependencies:
   alfred: ^0.1.7
   cryptography: ^2.0.5
+  http: ^0.13.5
