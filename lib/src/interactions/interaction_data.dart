@@ -39,18 +39,18 @@ class ApplicationCommandData implements InteractionData {
 
     this.resolved = payload["resolved"];
 
-    if(payload["options"] != null) {
+    if (payload["options"] != null) {
       options = [];
       (payload["options"] as List).forEach((element) {
         options!.add(ApplicationCommandOption.fromJson(element));
       });
     }
 
-    if(payload["guild_id"] != null) {
+    if (payload["guild_id"] != null) {
       this.guild_id = BigInt.parse(payload["guild_id"]);
     }
 
-    if(payload["target_id"] != null) {
+    if (payload["target_id"] != null) {
       this.target_id = BigInt.parse(payload["target_id"]);
     }
   }
@@ -58,12 +58,12 @@ class ApplicationCommandData implements InteractionData {
   @override
   String toString() {
     return "id: $id\n"
-      "name: $name\n"
-      "type: $type:${type.value}\n"
-      "resolved: $resolved\n"
-      "options: $options\n"
-      "guild_id: $guild_id\n"
-      "target_id: $target_id";
+        "name: $name\n"
+        "type: $type:${type.value}\n"
+        "resolved: $resolved\n"
+        "options: $options\n"
+        "guild_id: $guild_id\n"
+        "target_id: $target_id";
   }
 }
 
@@ -91,14 +91,14 @@ class ApplicationCommandOption {
     type = ApplicationCommandOptionType.fromInt(payload["type"]);
     value = payload["value"];
 
-    if(payload["options"] != null) {
+    if (payload["options"] != null) {
       options = [];
       (payload["options"] as List).forEach((element) {
         options!.add(ApplicationCommandOption.fromJson(element));
       });
     }
 
-    if(payload["focused"] == null) {
+    if (payload["focused"] == null) {
       focused = false;
     } else {
       focused = payload["focused"];
@@ -108,10 +108,10 @@ class ApplicationCommandOption {
   @override
   String toString() {
     return "name: $name\n"
-      "type: $type\n"
-      "value: $value\n"
-      "options: $options\n"
-      "focused: $focused";
+        "type: $type\n"
+        "value: $value\n"
+        "options: $options\n"
+        "focused: $focused";
   }
 }
 
@@ -130,7 +130,7 @@ class MessageComponentData implements InteractionData {
   MessageComponentData.fromJson(JsonData payload) {
     this.custom_id = payload["custom_id"];
 
-    if(payload["component_type"] != null) {
+    if (payload["component_type"] != null) {
       this.component_type = ComponentType.fromInt(payload["component_type"]);
     }
 
@@ -140,8 +140,8 @@ class MessageComponentData implements InteractionData {
   @override
   String toString() {
     return "custom_id: $custom_id\n"
-      "component_type: $component_type\n"
-      "values: $values";
+        "component_type: $component_type\n"
+        "values: $values";
   }
 }
 
@@ -164,6 +164,6 @@ class ModalSubmitData implements InteractionData {
   @override
   String toString() {
     return "custom_id: $custom_id\n"
-      "components: $components";
+        "components: $components";
   }
 }

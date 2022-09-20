@@ -2,8 +2,10 @@
 enum ApplicationCommandType {
   /// A chat input type, also known as a slash command.
   chat_input(1),
+
   /// A command type generated from right clicking on a user.
   user(2),
+
   /// A command type generated from right clicking on a message.
   message(3);
 
@@ -11,7 +13,7 @@ enum ApplicationCommandType {
   final int value;
 
   factory ApplicationCommandType.fromInt(int value) {
-    switch(value) {
+    switch (value) {
       case 1:
         return ApplicationCommandType.chat_input;
       case 2:
@@ -42,7 +44,7 @@ enum ApplicationCommandOptionType {
   final int value;
 
   factory ApplicationCommandOptionType.fromInt(int value) {
-    switch(value) {
+    switch (value) {
       case 1:
         return ApplicationCommandOptionType.sub_command;
       case 2:
@@ -75,12 +77,16 @@ enum ApplicationCommandOptionType {
 enum ButtonStyle {
   /// A burple colored button.
   primary(1),
+
   /// A gray, or neutral, colored button.
   secondary(2),
+
   /// A green colored button.
   success(3),
+
   /// A red colored button.
   danger(4),
+
   /// A gray, or neutral, colored button that links to a URL.
   link(5);
 
@@ -88,7 +94,7 @@ enum ButtonStyle {
   final int value;
 
   factory ButtonStyle.fromInt(int value) {
-    switch(value) {
+    switch (value) {
       case 1:
         return ButtonStyle.primary;
       case 2:
@@ -116,7 +122,7 @@ enum ComponentType {
   final int value;
 
   factory ComponentType.fromInt(int value) {
-    switch(value) {
+    switch (value) {
       case 1:
         return ComponentType.action_row;
       case 2:
@@ -144,7 +150,7 @@ enum InteractionType {
   final int value;
 
   factory InteractionType.fromInt(int value) {
-    switch(value) {
+    switch (value) {
       case 1:
         return InteractionType.ping;
       case 2:
@@ -165,16 +171,22 @@ enum InteractionType {
 enum InteractionResponseType {
   /// A PONG response, utilized for responding to PING interactions from Discord.
   pong(1),
+
   /// Respond with a message.
   message_response(4),
+
   /// Defer an interaction to be responded to later.
   defer_message_response(5),
+
   /// For components, defer so the original message can be edited later.
   defer_update_message(6),
+
   /// For components, edit the message that the component was attached to.
   update_message(7),
+
   /// Reply to an autocomplete interaction with some suggested choices to pick from.
   autocomplete_suggestions(8),
+
   /// Respond with a modal popup.
   modal(9);
 
@@ -182,7 +194,7 @@ enum InteractionResponseType {
   final int value;
 
   factory InteractionResponseType.fromInt(int value) {
-    switch(value) {
+    switch (value) {
       case 1:
         return InteractionResponseType.pong;
       case 4:
@@ -207,6 +219,7 @@ enum InteractionResponseType {
 enum TextInputStyle {
   /// A short text input field, fixed size at one line tall.
   short(1),
+
   /// A long text input field, can be resized.
   paragraph(2);
 
@@ -214,7 +227,7 @@ enum TextInputStyle {
   final int value;
 
   factory TextInputStyle.fromInt(int value) {
-    switch(value) {
+    switch (value) {
       case 1:
         return TextInputStyle.short;
       case 2:

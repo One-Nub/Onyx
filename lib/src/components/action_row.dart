@@ -26,7 +26,7 @@ class ActionRow implements Component {
     (data["components"] as List).forEach((element) {
       ComponentType elementType = ComponentType.fromInt(element["type"]);
 
-      if(elementType == ComponentType.button) {
+      if (elementType == ComponentType.button) {
         components.add(Button.fromJson(element));
       } else if (elementType == ComponentType.select_menu) {
         components.add(SelectMenu.fromJson(element));
@@ -43,10 +43,7 @@ class ActionRow implements Component {
     List<JsonData> componentList = [];
     components.forEach((element) => componentList.add(element.toJson()));
 
-    return {
-      "type": type.value,
-      "components": componentList
-    };
+    return {"type": type.value, "components": componentList};
   }
 
   @override

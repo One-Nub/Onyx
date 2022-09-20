@@ -47,7 +47,7 @@ class Button implements Component {
     custom_id = data["custom_id"];
     url = data["url"];
 
-    if(data["disabled"] == null) {
+    if (data["disabled"] == null) {
       disabled = false;
     } else {
       disabled = data["disabled"];
@@ -57,13 +57,13 @@ class Button implements Component {
   JsonData toJson() {
     JsonData finalData = {"type": type.value, "style": style.value, "disabled": disabled};
 
-    if(label != null) finalData["label"] = label;
+    if (label != null) finalData["label"] = label;
 
-    if(emoji != null) finalData["emoji"] = emoji;
+    if (emoji != null) finalData["emoji"] = emoji;
 
-    if(custom_id != null) finalData["custom_id"] = custom_id;
+    if (custom_id != null) finalData["custom_id"] = custom_id;
 
-    if(url != null) finalData["url"] = url;
+    if (url != null) finalData["url"] = url;
 
     return finalData;
   }
