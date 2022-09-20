@@ -8,6 +8,7 @@ import '../typedefs.dart';
 /// https://discord.com/developers/docs/interactions/receiving-and-responding#interaction-object-interaction-data
 abstract class InteractionData {}
 
+/// Representation of application command data for an Interaction.
 class ApplicationCommandData implements InteractionData {
   /// Invoked command ID
   late BigInt id;
@@ -30,6 +31,7 @@ class ApplicationCommandData implements InteractionData {
   /// ID of the targeted user or message for a user or message command.
   BigInt? target_id;
 
+  /// Instantiate from a decoded JSON [payload].
   ApplicationCommandData.fromJson(JsonData payload) {
     this.id = BigInt.parse(payload["id"]);
     this.name = payload["name"];
@@ -65,11 +67,23 @@ class ApplicationCommandData implements InteractionData {
   }
 }
 
+/// Representation of an application command option.
 class ApplicationCommandOption {
+  /// Parameter name
   late String name;
+
+  /// The type of the option.
   late ApplicationCommandOptionType type;
+
+  /// Value of the option from the user.
+  ///
+  /// Can be null, string, int, or double.
   dynamic? value;
+
+  /// Nested options if this option is a group or subcommand.
   List<ApplicationCommandOption>? options;
+
+  /// True if this field is focused, used for autocompletion.
   late bool focused;
 
   ApplicationCommandOption.fromJson(JsonData payload) {
@@ -101,6 +115,7 @@ class ApplicationCommandOption {
   }
 }
 
+/// Representation of message component data for an Interaction.
 class MessageComponentData implements InteractionData {
   /// The custom ID of a modal or message component.
   String? custom_id;
@@ -110,6 +125,7 @@ class MessageComponentData implements InteractionData {
 
   /// Selected values from a select menu message component.
   List<dynamic>? values;
+  //TODO: Convert to use SelectOptionValue instead of dynamic.
 
   MessageComponentData.fromJson(JsonData payload) {
     this.custom_id = payload["custom_id"];
@@ -129,7 +145,10 @@ class MessageComponentData implements InteractionData {
   }
 }
 
+/// Representation of data that was submitted from a modal.
 class ModalSubmitData implements InteractionData {
+  //TODO: Convert non-nullable fields to late fields instead.
+
   /// The custom ID of a modal or message component.
   String? custom_id;
 
@@ -138,6 +157,7 @@ class ModalSubmitData implements InteractionData {
 
   ModalSubmitData.fromJson(JsonData payload) {
     this.custom_id = payload["custom_id"];
+    // TODO: Convert this to create components instead of just leaving it as a map.
     this.components = payload["components"];
   }
 

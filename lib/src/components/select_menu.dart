@@ -2,14 +2,41 @@ import '../enums.dart';
 import '../typedefs.dart';
 import 'component_base.dart';
 
+/// Represents a Select Menu component.
+///
+/// https://discord.com/developers/docs/interactions/message-components#select-menus
 class SelectMenu implements Component {
+  /// The component type.
   final ComponentType type = ComponentType.select_menu;
+
+  /// Developer defined identifier for this selection menu.
+  ///
+  /// Limited to 100 characters at most.
   late String custom_id;
+
+  /// The [SelectMenuOption]s that will be displayed for this Select Menu component.
+  ///
+  /// Limited to 25 options to choose from at most.
   late List<SelectMenuOption> options;
 
+  /// Text that will appear if nothing is selected.
+  ///
+  /// Limited to 150 characters at most.
   String? placeholderText;
+
+  /// Minimum number of values that can be selected.
+  ///
+  /// Default is 1, minimum is 0, maximum is 25.
   int? min_values;
+
+  /// Maximum number of values that can be selected.
+  ///
+  /// Default is 1, maximum is 25.
   int? max_values;
+
+  /// Disables the select menu.
+  ///
+  /// Disabled if true, enabled if false.
   late bool disabled;
 
   SelectMenu({required this.custom_id, List<SelectMenuOption>? options, this.placeholderText,
@@ -40,6 +67,7 @@ class SelectMenu implements Component {
     }
   }
 
+  /// Add an [option] to this Select Menu.
   void addOption(SelectMenuOption option) => options.add(option);
 
   JsonData toJson() {
@@ -63,11 +91,32 @@ class SelectMenu implements Component {
   }
 }
 
+/// An option for a [SelectMenu] component.
+///
+/// https://discord.com/developers/docs/interactions/message-components#select-menu-object-select-option-structure
 class SelectMenuOption {
+  /// The name of this option that users will see.
+  ///
+  /// 100 characters at most.
   late String label;
+
+  /// Developer defined value for this option.
+  ///
+  /// 100 characters as most.
   late String value;
+
+  /// An additional description for this option.
+  ///
+  /// 100 characters at most.
   String? description;
+
+  /// A partial emoji that will be shown with this option.
+  ///
+  /// Partial emojis consist of the `id`, `name`, and `animated` fields.
+  /// https://discord.com/developers/docs/resources/emoji#emoji-object
   JsonData? emoji;
+
+  /// Will show this option as selected by default if true.
   bool? defaultSelection;
 
   SelectMenuOption({required this.label, required this.value, this.description,

@@ -1,6 +1,10 @@
+/// Consists of accepted Application Command types.
 enum ApplicationCommandType {
+  /// A chat input type, also known as a slash command.
   chat_input(1),
+  /// A command type generated from right clicking on a user.
   user(2),
+  /// A command type generated from right clicking on a message.
   message(3);
 
   const ApplicationCommandType(this.value);
@@ -20,6 +24,7 @@ enum ApplicationCommandType {
   }
 }
 
+/// Consists of accepted Application Command option types.
 enum ApplicationCommandOptionType {
   sub_command(1),
   sub_command_group(2),
@@ -66,11 +71,17 @@ enum ApplicationCommandOptionType {
   }
 }
 
+/// Consists of accepted Button styles.
 enum ButtonStyle {
+  /// A burple colored button.
   primary(1),
+  /// A gray, or neutral, colored button.
   secondary(2),
+  /// A green colored button.
   success(3),
+  /// A red colored button.
   danger(4),
+  /// A gray, or neutral, colored button that links to a URL.
   link(5);
 
   const ButtonStyle(this.value);
@@ -94,6 +105,7 @@ enum ButtonStyle {
   }
 }
 
+/// Consists of accepted Component types.
 enum ComponentType {
   action_row(1),
   button(2),
@@ -119,7 +131,9 @@ enum ComponentType {
   }
 }
 
+/// Consists of accepted Interaction types.
 enum InteractionType {
+  /// A ping interaction, only received from Discord.
   ping(1),
   application_command(2),
   message_component(3),
@@ -147,13 +161,21 @@ enum InteractionType {
   }
 }
 
+/// Consists of accepted Interaction Response types.
 enum InteractionResponseType {
+  /// A PONG response, utilized for responding to PING interactions from Discord.
   pong(1),
+  /// Respond with a message.
   message_response(4),
+  /// Defer an interaction to be responded to later.
   defer_message_response(5),
+  /// For components, defer so the original message can be edited later.
   defer_update_message(6),
+  /// For components, edit the message that the component was attached to.
   update_message(7),
-  autcomplete_suggestions(8),
+  /// Reply to an autocomplete interaction with some suggested choices to pick from.
+  autocomplete_suggestions(8),
+  /// Respond with a modal popup.
   modal(9);
 
   const InteractionResponseType(this.value);
@@ -172,7 +194,7 @@ enum InteractionResponseType {
       case 7:
         return InteractionResponseType.update_message;
       case 8:
-        return InteractionResponseType.autcomplete_suggestions;
+        return InteractionResponseType.autocomplete_suggestions;
       case 9:
         return InteractionResponseType.modal;
       default:
@@ -181,8 +203,11 @@ enum InteractionResponseType {
   }
 }
 
+/// Consists of accepted Text Input styles.
 enum TextInputStyle {
+  /// A short text input field, fixed size at one line tall.
   short(1),
+  /// A long text input field, can be resized.
   paragraph(2);
 
   const TextInputStyle(this.value);
