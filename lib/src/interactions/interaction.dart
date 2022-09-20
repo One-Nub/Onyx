@@ -69,7 +69,7 @@ class Interaction with Metadata {
     this.application_id = BigInt.parse(payload["application_id"]);
     this.type = InteractionType.fromInt(payload["type"]);
 
-    if(payload.containsKey("data")) {
+    if (payload.containsKey("data")) {
       if (payload["data"].containsKey("id")) {
         this.data = ApplicationCommandData.fromJson(payload["data"]);
       } else if (payload["data"].containsKey("component_type")) {
@@ -87,29 +87,28 @@ class Interaction with Metadata {
       this.channel_id = BigInt.parse(payload["channel_id"]);
     }
 
-    if(payload.containsKey("member")) {
+    if (payload.containsKey("member")) {
       this.member = payload["member"];
-    }
-    else if(payload.containsKey("user")) {
+    } else if (payload.containsKey("user")) {
       this.user = payload["user"];
     }
 
     this.token = payload["token"];
     this.version = payload["version"];
 
-    if(payload.containsKey("message")) {
+    if (payload.containsKey("message")) {
       this.message = payload["message"];
     }
 
-    if(payload.containsKey("app_permissions")) {
+    if (payload.containsKey("app_permissions")) {
       this.app_permissions = app_permissions;
     }
 
-    if(payload.containsKey("locale")) {
+    if (payload.containsKey("locale")) {
       this.locale = locale;
     }
 
-    if(payload.containsKey("guild_locale")) {
+    if (payload.containsKey("guild_locale")) {
       this.guild_locale = guild_locale;
     }
   }
@@ -117,18 +116,18 @@ class Interaction with Metadata {
   @override
   String toString() {
     return "Interaction ID: $id\n"
-      "Application ID: $application_id\n"
-      "Type: $type:${type.value}\n"
-      "Data: {${data}}\n"
-      "Guild ID: $guild_id\n"
-      "Channel ID: $channel_id\n"
-      "Member: $member\n"
-      "User: $user\n"
-      "Token: $token\n"
-      "Version: $version\n"
-      "Message: $message\n"
-      "App permissions: $app_permissions\n"
-      "Locale: $locale\n"
-      "Guild locale: $guild_locale";
+        "Application ID: $application_id\n"
+        "Type: $type:${type.value}\n"
+        "Data: {${data}}\n"
+        "Guild ID: $guild_id\n"
+        "Channel ID: $channel_id\n"
+        "Member: $member\n"
+        "User: $user\n"
+        "Token: $token\n"
+        "Version: $version\n"
+        "Message: $message\n"
+        "App permissions: $app_permissions\n"
+        "Locale: $locale\n"
+        "Guild locale: $guild_locale";
   }
 }

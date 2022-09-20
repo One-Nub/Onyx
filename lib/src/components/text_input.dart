@@ -45,8 +45,15 @@ class TextInput implements Component {
   /// Limited to 100 characters at most.
   String? placeholderText;
 
-  TextInput({required this.custom_id, required this.style, required this.label, this.min_length,
-    this.max_length, this.requiredField = true, this.defaultValue, this.placeholderText});
+  TextInput(
+      {required this.custom_id,
+      required this.style,
+      required this.label,
+      this.min_length,
+      this.max_length,
+      this.requiredField = true,
+      this.defaultValue,
+      this.placeholderText});
 
   TextInput.fromJson(JsonData data) {
     custom_id = data["custom_id"];
@@ -55,7 +62,7 @@ class TextInput implements Component {
     min_length = data["min_length"];
     max_length = data["max_length"];
 
-    if(data["required"] == null) {
+    if (data["required"] == null) {
       requiredField = false;
     } else {
       requiredField = data["required"];
@@ -74,13 +81,13 @@ class TextInput implements Component {
       "required": requiredField
     };
 
-    if(min_length != null) finalData["min_length"] = min_length;
+    if (min_length != null) finalData["min_length"] = min_length;
 
-    if(max_length != null) finalData["max_length"] = max_length;
+    if (max_length != null) finalData["max_length"] = max_length;
 
-    if(defaultValue != null) finalData["value"] = defaultValue;
+    if (defaultValue != null) finalData["value"] = defaultValue;
 
-    if(placeholderText != null) finalData["placeholder"] = placeholderText;
+    if (placeholderText != null) finalData["placeholder"] = placeholderText;
 
     return finalData;
   }

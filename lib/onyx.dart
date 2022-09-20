@@ -1,4 +1,3 @@
-
 /// The Onyx package, providing application command and interaction management.
 library onyx;
 

@@ -16,9 +16,6 @@ class InteractionResponse {
 
   /// Return a deserialized json representation of the response.
   Map<String, dynamic> toJson() {
-    return {
-      "type": responseType.value,
-      "data": data
-    };
+    return {"type": responseType.value, "data": data};
   }
 }
