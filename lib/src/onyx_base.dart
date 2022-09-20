@@ -3,15 +3,60 @@ import './interactions/interaction.dart';
 import './interactions/interaction_data.dart';
 import './streams.dart';
 
+/// Primary interaction dispatcher.
+///
+/// Interactions can be dispatched via [dispatchInteraction] to its' respective stream, if
+/// one exists, or a handler if one is accepted, or exists, for that type of interaction.
+///
+/// Application command, message component, and modal submissions allow for the registering
+/// of a handler that would consume any event if there is a match.
+///
+/// Without a match or without a handler, like autocomplete interactions, they will be passed
+/// towards their respective stream, excluding application commands, as defined in the
+/// [interactionStreams] object, or via their respective static definitions on [OnyxStreams].
 class Onyx {
+  /// Map containing the handlers for application command interactions.
+  ///
+  /// The string portion is the name of the application command.
+  ///
+  /// Handler functions should be registered through [registerAppCommandHandler] rather than
+  /// manually inserting it into the map.
   Map<String, Function> appCommandHandlers = {};
+
+  /// Map containing the handlers for component interactions.
+  ///
+  /// The string portion is the custom_id of the component.
+  /// Handler functions should be registered through [registerGenericComponentHandler] rather than
+  /// manually inserting it into the map.
   Map<String, Function> genericComponentHandlers = {};
+
+  /// Map containing the handlers for modal submission interactions.
+  ///
+  /// The string portion is the custom_id of the component.
+  /// Handler functions should be registered through [registerGenericModalHandler] rather than
+  /// manually inserting it into the map.
   Map<String, Function> genericModalHandlers = {};
 
+  /// Initializes the component, autocomplete, and modal streams as defined in [OnyxStreams].
   OnyxStreams interactionStreams = OnyxStreams();
 
+  /// Create an Onyx object.
   Onyx();
 
+  /// Dispatch an incoming interaction to the Onyx process to then be handled as necessary.
+  ///
+  /// Application commands must have a handler that was registered into the [appCommandHandlers] map,
+  /// where the name of the command in the interaction matches the name that was defined when registering
+  /// the command into the [appCommandHandlers] map. Without a matching handler, the interaction
+  /// will be dropped.
+  ///
+  /// Message component interactions will either be passed to a handler based upon the custom_id
+  /// or streamed via [OnyxStreams.componentStream].
+  ///
+  /// Autocomplete interactions will be streamed via [OnyxStreams.autocompleteStream].
+  ///
+  /// Modal submission interactions will either be passed to a handler based upon the custom_id
+  /// or streamed via [OnyxStreams.modalStream].
   void dispatchInteraction(Interaction interaction) {
     if (interaction.type == InteractionType.application_command) {
       ApplicationCommandData? commandData = interaction.data as ApplicationCommandData?;
@@ -64,16 +109,21 @@ class Onyx {
     }
   }
 
+  /// Register a command [handler] function to Onyx that will trigger for all
+  /// application command interactions name of [name].
   void registerAppCommandHandler(String name, Function(Interaction) handler) {
     appCommandHandlers.update(name, (value) => handler, ifAbsent: () => handler);
   }
 
+  /// Register a component [handler] function to Onyx that will trigger for all
+  /// component interactions with a custom id of [customID].
   void registerGenericComponentHandler(String customID, Function(Interaction) handler) {
     genericComponentHandlers.update(customID, (value) => handler, ifAbsent: () => handler);
   }
 
+  /// Register a modal submission [handler] function to Onyx that will trigger for all
+  /// modal submission interactions with a custom id of [customID].
   void registerGenericModalHandler(String customID, Function(Interaction) handler) {
     genericModalHandlers.update(customID, (value) => handler, ifAbsent: () => handler);
   }
-
 }

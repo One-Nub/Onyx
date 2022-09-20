@@ -2,14 +2,36 @@ import '../enums.dart';
 import '../typedefs.dart';
 import 'component_base.dart';
 
+/// Represents a button component.
+///
+/// https://discord.com/developers/docs/interactions/message-components#buttons
 class Button implements Component {
+  /// The component type.
   final ComponentType type = ComponentType.button;
 
+  /// The [ButtonStyle] for this button.
   late ButtonStyle style;
+
+  /// Text that will appear on this button.
+  ///
+  /// Limited to 80 characters at most.
   String? label;
+
+  /// A partial emoji that will show on this button.
+  ///
+  /// Partial emojis consist of `name`, `id`, and the `animated` fields.
+  /// https://discord.com/developers/docs/resources/emoji#emoji-resource
   JsonData? emoji;
+
+  /// Developer defined identifier for this button.
+  ///
+  /// Limited to 100 characters at most.
   String? custom_id;
+
+  /// For [ButtonStyle.link] buttons, the URL that the user will be redirected to.
   String? url;
+
+  /// Whether the button is disabled or not.
   late bool disabled;
 
   /// Create a button following a [style].
