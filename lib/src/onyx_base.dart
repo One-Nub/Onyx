@@ -69,6 +69,7 @@ class Onyx {
       if (appCommandHandlers.containsKey(interactionName)) {
         appCommandHandlers[interactionName]!(interaction);
       } else {
+        // TODO: Implement exception.
         // error msg, no handler found
       }
     } else if (interaction.type == InteractionType.message_component) {

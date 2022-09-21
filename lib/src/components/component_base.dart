@@ -1,5 +1,5 @@
 import '../enums.dart';
-import '../typedefs.dart';
+import '../utilities/typedefs.dart';
 
 /// A base component representation.
 ///

@@ -1,4 +1,4 @@
-import 'components/component_base.dart';
+import '../components/component_base.dart';
 
 /// Represents a map that is json encodable.
 typedef JsonData = Map<String, dynamic>;

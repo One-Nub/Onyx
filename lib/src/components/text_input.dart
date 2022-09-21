@@ -1,5 +1,5 @@
 import '../enums.dart';
-import '../typedefs.dart';
+import '../utilities/typedefs.dart';
 import 'component_base.dart';
 
 /// A Text Input component, utilized for Modals.

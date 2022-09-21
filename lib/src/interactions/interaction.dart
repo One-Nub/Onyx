@@ -1,6 +1,6 @@
 import '../enums.dart';
-import '../typedefs.dart';
-import '../metadata.dart';
+import '../utilities/typedefs.dart';
+import '../utilities/metadata.dart';
 import 'interaction_data.dart';
 
 /// Represents an interaction received from Discord.

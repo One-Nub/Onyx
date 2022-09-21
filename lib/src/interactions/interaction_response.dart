@@ -1,5 +1,5 @@
 import '../enums.dart';
-import '../typedefs.dart';
+import '../utilities/typedefs.dart';
 
 /// Used to create a response to an interaction.
 class InteractionResponse {

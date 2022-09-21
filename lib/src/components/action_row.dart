@@ -1,5 +1,5 @@
 import '../enums.dart';
-import '../typedefs.dart';
+import '../utilities/typedefs.dart';
 import 'button.dart';
 import 'component_base.dart';
 import 'select_menu.dart';
