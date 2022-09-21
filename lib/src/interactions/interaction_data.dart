@@ -15,6 +15,8 @@ import '../components/text_input.dart';
 abstract class InteractionData {}
 
 /// Representation of application command data for an Interaction.
+///
+/// https://discord.com/developers/docs/interactions/receiving-and-responding#interaction-object-application-command-data-structure
 class ApplicationCommandData implements InteractionData {
   /// Invoked command ID
   late BigInt id;
@@ -74,6 +76,8 @@ class ApplicationCommandData implements InteractionData {
 }
 
 /// Representation of an application command option.
+///
+/// https://discord.com/developers/docs/interactions/receiving-and-responding#interaction-object-application-command-interaction-data-option-structure
 class ApplicationCommandOption {
   /// Parameter name
   late String name;
@@ -84,7 +88,7 @@ class ApplicationCommandOption {
   /// Value of the option from the user.
   ///
   /// Can be null, string, int, or double.
-  dynamic? value;
+  dynamic value;
 
   /// Nested options if this option is a group or subcommand.
   List<ApplicationCommandOption>? options;
@@ -122,12 +126,14 @@ class ApplicationCommandOption {
 }
 
 /// Representation of message component data for an Interaction.
+///
+/// https://discord.com/developers/docs/interactions/receiving-and-responding#interaction-object-message-component-data-structure
 class MessageComponentData implements InteractionData {
   /// The custom ID of a modal or message component.
-  String? custom_id;
+  late String custom_id;
 
   /// For message components, the type of the component ran.
-  ComponentType? component_type;
+  late ComponentType component_type;
 
   /// Selected values from a select menu message component.
   List<dynamic>? values;
@@ -152,14 +158,14 @@ class MessageComponentData implements InteractionData {
 }
 
 /// Representation of data that was submitted from a modal.
+///
+/// https://discord.com/developers/docs/interactions/receiving-and-responding#interaction-object-modal-submit-data-structure
 class ModalSubmitData implements InteractionData {
-  //TODO: Convert non-nullable fields to late fields instead.
-
   /// The custom ID of a modal or message component.
-  String? custom_id;
+  late String custom_id;
 
   /// Values submitted by a user from a modal.
-  List<Component>? components;
+  late List<Component> components;
 
   ModalSubmitData.fromJson(JsonData payload) {
     this.custom_id = payload["custom_id"];
@@ -171,13 +177,13 @@ class ModalSubmitData implements InteractionData {
       // Although only text responses are supported rn, might as well cover all the bases
       // here for the future.
       if (componentType == ComponentType.action_row) {
-        components!.add(ActionRow.fromJson(element));
+        components.add(ActionRow.fromJson(element));
       } else if (componentType == ComponentType.button) {
-        components!.add(Button.fromJson(element));
+        components.add(Button.fromJson(element));
       } else if (componentType == ComponentType.select_menu) {
-        components!.add(SelectMenu.fromJson(element));
+        components.add(SelectMenu.fromJson(element));
       } else if (componentType == ComponentType.text_input) {
-        components!.add(TextInputResponse.fromJson(element));
+        components.add(TextInputResponse.fromJson(element));
       } else {
         throw UnimplementedError("A component type of $componentType is not supported yet!");
       }

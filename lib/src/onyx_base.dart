@@ -79,7 +79,7 @@ class Onyx {
       }
 
       String? customID = componentData.custom_id;
-      if (customID != null && genericComponentHandlers.containsKey(customID)) {
+      if (genericComponentHandlers.containsKey(customID)) {
         genericComponentHandlers[customID]!(interaction);
       } else {
         interactionStreams.componentController.add(interaction);
@@ -94,7 +94,7 @@ class Onyx {
       }
 
       String? customID = modalData.custom_id;
-      if (customID != null && genericModalHandlers.containsKey(customID)) {
+      if (genericModalHandlers.containsKey(customID)) {
         genericModalHandlers[customID]!(interaction);
       } else {
         interactionStreams.modalController.add(interaction);
