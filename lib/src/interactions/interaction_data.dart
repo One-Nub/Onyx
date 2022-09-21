@@ -136,8 +136,7 @@ class MessageComponentData implements InteractionData {
   late ComponentType component_type;
 
   /// Selected values from a select menu message component.
-  List<dynamic>? values;
-  //TODO: Convert to use SelectOptionValue instead of dynamic.
+  List<String>? values;
 
   MessageComponentData.fromJson(JsonData payload) {
     this.custom_id = payload["custom_id"];
@@ -146,7 +145,7 @@ class MessageComponentData implements InteractionData {
       this.component_type = ComponentType.fromInt(payload["component_type"]);
     }
 
-    this.values = payload["values"];
+    values = payload["values"];
   }
 
   @override
