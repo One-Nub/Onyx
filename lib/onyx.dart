@@ -11,8 +11,9 @@ export 'src/interactions/interaction.dart';
 export 'src/interactions/interaction_data.dart';
 export 'src/interactions/interaction_response.dart';
 
+export 'src/utilities/metadata.dart';
+export 'src/utilities/typedefs.dart';
+
 export 'src/enums.dart';
-export 'src/metadata.dart';
 export 'src/onyx_base.dart';
 export 'src/streams.dart';
-export 'src/typedefs.dart';
