@@ -145,7 +145,7 @@ class MessageComponentData implements InteractionData {
       this.component_type = ComponentType.fromInt(payload["component_type"]);
     }
 
-    values = payload["values"];
+    values = [...payload["values"]];
   }
 
   @override
