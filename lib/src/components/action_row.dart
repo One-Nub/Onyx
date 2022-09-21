@@ -31,7 +31,7 @@ class ActionRow implements Component {
       } else if (elementType == ComponentType.select_menu) {
         components.add(SelectMenu.fromJson(element));
       } else if (elementType == ComponentType.text_input) {
-        components.add(TextInput.fromJson(element));
+        components.add(TextInputResponse.fromJson(element));
       }
     });
   }

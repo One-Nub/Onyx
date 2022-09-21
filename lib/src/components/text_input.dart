@@ -97,3 +97,27 @@ class TextInput implements Component {
     return "${toJson()}";
   }
 }
+
+/// Represents the text input from a user in a modal.
+///
+/// Since these are 'partial' in a sense compared to a whole [TextInput] object, it makes
+/// more sense to implement separately.
+class TextInputResponse implements Component {
+  /// The component type.
+  final ComponentType type = ComponentType.text_input;
+
+  /// The developer defined identifier for this input field.
+  late String custom_id;
+
+  /// The value the user input for this text field.
+  late String value;
+
+  TextInputResponse.fromJson(JsonData payload) {
+    custom_id = payload["custom_id"];
+    value = payload["value"];
+  }
+
+  JsonData toJson() {
+    return {"custom_id": custom_id, "type": type.value, "value": value};
+  }
+}

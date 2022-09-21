@@ -1,6 +1,12 @@
 import '../enums.dart';
 import '../typedefs.dart';
 
+import '../components/action_row.dart';
+import '../components/button.dart';
+import '../components/component_base.dart';
+import '../components/select_menu.dart';
+import '../components/text_input.dart';
+
 /// Common base representing for all implementing InteractionData subclasses.
 ///
 /// It ended up existing this way since between all interaction data instances there is
@@ -153,12 +159,29 @@ class ModalSubmitData implements InteractionData {
   String? custom_id;
 
   /// Values submitted by a user from a modal.
-  List<dynamic>? components;
+  List<Component>? components;
 
   ModalSubmitData.fromJson(JsonData payload) {
     this.custom_id = payload["custom_id"];
-    // TODO: Convert this to create components instead of just leaving it as a map.
-    this.components = payload["components"];
+    this.components = [];
+
+    (payload["components"] as List).forEach((element) {
+      var componentType = ComponentType.fromInt(element["type"]);
+
+      // Although only text responses are supported rn, might as well cover all the bases
+      // here for the future.
+      if (componentType == ComponentType.action_row) {
+        components!.add(ActionRow.fromJson(element));
+      } else if (componentType == ComponentType.button) {
+        components!.add(Button.fromJson(element));
+      } else if (componentType == ComponentType.select_menu) {
+        components!.add(SelectMenu.fromJson(element));
+      } else if (componentType == ComponentType.text_input) {
+        components!.add(TextInputResponse.fromJson(element));
+      } else {
+        throw UnimplementedError("A component type of $componentType is not supported yet!");
+      }
+    });
   }
 
   @override
