@@ -6,6 +6,6 @@ environment:
   sdk: ">=2.17.0 <3.0.0"
 
 dev_dependencies:
-  alfred: ^0.1.7
-  cryptography: ^2.0.5
+  alfred: ^1.0.0
+  cryptography: ^2.4.0
   http: ^0.13.5
