@@ -1,9 +1,9 @@
 name: onyx
-version: 0.3.0
+version: 0.3.1
 description: "A library focused on handling Interactions, Application Commands, and Message Components for Discord."
 
 environment:
-  sdk: ">=2.17.0 <3.0.0"
+  sdk: ">=2.17.0 <4.0.0"
 
 dev_dependencies:
   alfred: ^1.0.0
