@@ -4,10 +4,17 @@ import 'component_base.dart';
 
 /// Represents a Select Menu component.
 ///
+/// A select menu has five possible typings. [ComponentType.string_select], [ComponentType.user_select],
+/// [ComponentType.role_select], [ComponentType.mentionable_select] and [ComponentType.channel_select].
+/// The default is [ComponentType.string_select].
+///
+/// The [SelectMenu.options] value is only acceptable for a select menu of ComponentType.select_menu. All
+/// other types have options provided by Discord.
+///
 /// https://discord.com/developers/docs/interactions/message-components#select-menus
 class SelectMenu implements Component {
   /// The component type.
-  final ComponentType type = ComponentType.select_menu;
+  late ComponentType type;
 
   /// Developer defined identifier for this selection menu.
   ///
@@ -41,6 +48,7 @@ class SelectMenu implements Component {
 
   SelectMenu(
       {required this.custom_id,
+      this.type = ComponentType.string_select,
       List<SelectMenuOption>? options,
       this.placeholderText,
       this.min_values,
@@ -55,6 +63,8 @@ class SelectMenu implements Component {
 
   SelectMenu.fromJson(JsonData data) {
     custom_id = data["custom_id"];
+
+    type = ComponentType.fromInt(data["type"]);
 
     options = [];
     (data["options"] as List).forEach((element) {
@@ -78,9 +88,12 @@ class SelectMenu implements Component {
   JsonData toJson() {
     JsonData finalData = {"type": type.value, "custom_id": custom_id, "disabled": disabled};
 
-    List<JsonData> optionsList = [];
-    options.forEach((element) => optionsList.add(element.toJson()));
-    finalData["options"] = optionsList;
+    // Only add options list to a string-based select_menu.
+    if (type == ComponentType.string_select) {
+      List<JsonData> optionsList = [];
+      options.forEach((element) => optionsList.add(element.toJson()));
+      finalData["options"] = optionsList;
+    }
 
     if (placeholderText != null) finalData["placeholder"] = placeholderText;
 

@@ -120,7 +120,7 @@ enum ComponentType {
   button(2),
 
   /// A menu with a set of defined text options that can be chosen from.
-  select_menu(3),
+  string_select(3),
 
   /// User-provided input. Only works on modals.
   text_input(4),
@@ -147,7 +147,7 @@ enum ComponentType {
       case 2:
         return ComponentType.button;
       case 3:
-        return ComponentType.select_menu;
+        return ComponentType.string_select;
       case 4:
         return ComponentType.text_input;
       case 5:
