@@ -80,10 +80,20 @@ class Onyx {
       }
 
       String? customID = componentData.custom_id;
+
       if (genericComponentHandlers.containsKey(customID)) {
         genericComponentHandlers[customID]!(interaction);
       } else {
-        interactionStreams.componentController.add(interaction);
+        bool success = false;
+        for (var key in genericComponentHandlers.keys) {
+          if (customID.startsWith(key)) {
+            success = true;
+            genericComponentHandlers[key]!(interaction);
+            break;
+          }
+        }
+
+        if (!success) interactionStreams.componentController.add(interaction);
       }
     } else if (interaction.type == InteractionType.autocomplete) {
       interactionStreams.autocompleteController.add(interaction);
@@ -98,7 +108,17 @@ class Onyx {
       if (genericModalHandlers.containsKey(customID)) {
         genericModalHandlers[customID]!(interaction);
       } else {
-        interactionStreams.modalController.add(interaction);
+        bool success = false;
+
+        for (var key in genericModalHandlers.keys) {
+          if (customID.startsWith(key)) {
+            success = true;
+            genericComponentHandlers[key]!(interaction);
+            break;
+          }
+        }
+
+        if (!success) interactionStreams.modalController.add(interaction);
       }
     } else {
       throw UnsupportedError("The given interaction type of ${interaction.type} is not "
