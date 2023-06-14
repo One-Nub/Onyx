@@ -113,10 +113,29 @@ enum ButtonStyle {
 
 /// Consists of accepted Component types.
 enum ComponentType {
+  /// Container for other components to exist in.
   action_row(1),
+
+  /// A button that users can click on.
   button(2),
+
+  /// A menu with a set of defined text options that can be chosen from.
   select_menu(3),
-  text_input(4);
+
+  /// User-provided input. Only works on modals.
+  text_input(4),
+
+  /// A menu that contains a list of users to choose from.
+  user_select(5),
+
+  /// A menu that contains a list of roles to choose from.
+  role_select(6),
+
+  /// A menu that contains a list of users and roles to choose from.
+  mentionable_select(7),
+
+  /// A menu that contains a list of channels to choose from.
+  channel_select(8);
 
   const ComponentType(this.value);
   final int value;
@@ -131,6 +150,14 @@ enum ComponentType {
         return ComponentType.select_menu;
       case 4:
         return ComponentType.text_input;
+      case 5:
+        return ComponentType.user_select;
+      case 6:
+        return ComponentType.role_select;
+      case 7:
+        return ComponentType.mentionable_select;
+      case 8:
+        return ComponentType.channel_select;
       default:
         throw UnimplementedError("The type $value is not implemented as a component type.");
     }
