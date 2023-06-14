@@ -14,7 +14,10 @@ import '../components/text_input.dart';
 /// https://discord.com/developers/docs/interactions/receiving-and-responding#interaction-object-interaction-data
 abstract class InteractionData {}
 
-/// Representation of application command data for an Interaction.
+/// Representation of application command data for an Interaction. Also applies to autocomplete data.
+///
+/// Autocomplete data is a partial view of typical application command data.
+/// https://discord.com/developers/docs/interactions/application-commands#autocomplete
 ///
 /// https://discord.com/developers/docs/interactions/receiving-and-responding#interaction-object-application-command-data-structure
 class ApplicationCommandData implements InteractionData {

@@ -37,6 +37,13 @@ class Onyx {
   /// manually inserting it into the map.
   Map<String, Function> genericModalHandlers = {};
 
+  /// Map containing the handlers for autocomplete interactions.
+  ///
+  /// The string portion is the custom_id of the component.
+  /// Handler functions should be registered through [registerGenericAutocompleteHandler] rather than
+  /// manually inserting it into the map.
+  Map<String, Function> genericAutocompleteHandlers = {};
+
   /// Initializes the component, autocomplete, and modal streams as defined in [OnyxStreams].
   OnyxStreams interactionStreams = OnyxStreams();
 
@@ -53,7 +60,8 @@ class Onyx {
   /// Message component interactions will either be passed to a handler based upon the custom_id
   /// or streamed via [OnyxStreams.componentStream].
   ///
-  /// Autocomplete interactions will be streamed via [OnyxStreams.autocompleteStream].
+  /// Autocomplete interactions will either be passed to a handler based upon the custom_id
+  /// or streamed via [OnyxStreams.autocompleteStream].
   ///
   /// Modal submission interactions will either be passed to a handler based upon the custom_id
   /// or streamed via [OnyxStreams.modalStream].
@@ -96,7 +104,17 @@ class Onyx {
         if (!success) interactionStreams.componentController.add(interaction);
       }
     } else if (interaction.type == InteractionType.autocomplete) {
-      interactionStreams.autocompleteController.add(interaction);
+      ApplicationCommandData? autocompleteData = interaction.data as ApplicationCommandData?;
+      if (autocompleteData == null) {
+        throw UnsupportedError("The given autocomplete interaction does not contain any data. "
+            "This is unsupported when dispatching.");
+      }
+
+      if (genericAutocompleteHandlers.containsKey(autocompleteData.name)) {
+        genericAutocompleteHandlers[autocompleteData.name]!(interaction);
+      } else {
+        interactionStreams.autocompleteController.add(interaction);
+      }
     } else if (interaction.type == InteractionType.modal_submit) {
       ModalSubmitData? modalData = interaction.data as ModalSubmitData?;
       if (modalData == null) {
@@ -133,14 +151,22 @@ class Onyx {
   }
 
   /// Register a component [handler] function to Onyx that will trigger for all
-  /// component interactions with a custom id of [customID].
+  /// component interactions with a custom id that either matches or is prefixed
+  /// with [customID].
   void registerGenericComponentHandler(String customID, Function(Interaction) handler) {
     genericComponentHandlers.update(customID, (value) => handler, ifAbsent: () => handler);
   }
 
   /// Register a modal submission [handler] function to Onyx that will trigger for all
-  /// modal submission interactions with a custom id of [customID].
+  /// modal submission interactions with a custom id that either matches or is prefixed
+  /// with [customID].
   void registerGenericModalHandler(String customID, Function(Interaction) handler) {
     genericModalHandlers.update(customID, (value) => handler, ifAbsent: () => handler);
+  }
+
+  /// Register an autocomplete [handler] function to Onyx that will trigger for all
+  /// autocomplete interactions with a command name that matches the given [commandName].
+  void registerGenericAutocompleteHandler(String commandName, Function(Interaction) handler) {
+    genericAutocompleteHandlers.update(commandName, (value) => handler, ifAbsent: () => handler);
   }
 }
