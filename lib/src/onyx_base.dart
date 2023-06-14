@@ -1,4 +1,5 @@
 import './enums.dart';
+import './exceptions.dart';
 import './interactions/interaction.dart';
 import './interactions/interaction_data.dart';
 import './streams.dart';
@@ -77,8 +78,8 @@ class Onyx {
       if (appCommandHandlers.containsKey(interactionName)) {
         appCommandHandlers[interactionName]!(interaction);
       } else {
-        // TODO: Implement exception.
-        // error msg, no handler found
+        throw HandlerNotFoundError(
+            "No command handler was registered or found for the command ${interactionName}.");
       }
     } else if (interaction.type == InteractionType.message_component) {
       MessageComponentData? componentData = interaction.data as MessageComponentData?;

@@ -15,5 +15,6 @@ export 'src/utilities/metadata.dart';
 export 'src/utilities/typedefs.dart';
 
 export 'src/enums.dart';
+export 'src/exceptions.dart';
 export 'src/onyx_base.dart';
 export 'src/streams.dart';
