@@ -132,7 +132,7 @@ class Onyx {
         for (var key in genericModalHandlers.keys) {
           if (customID.startsWith(key)) {
             success = true;
-            genericComponentHandlers[key]!(interaction);
+            genericModalHandlers[key]!(interaction);
             break;
           }
         }
