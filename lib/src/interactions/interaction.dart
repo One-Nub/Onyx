@@ -101,15 +101,15 @@ class Interaction with Metadata {
     }
 
     if (payload.containsKey("app_permissions")) {
-      this.app_permissions = app_permissions;
+      this.app_permissions = payload["app_permissions"];
     }
 
     if (payload.containsKey("locale")) {
-      this.locale = locale;
+      this.locale = payload["locale"];
     }
 
     if (payload.containsKey("guild_locale")) {
-      this.guild_locale = guild_locale;
+      this.guild_locale = payload["guild_locale"];
     }
   }
 
