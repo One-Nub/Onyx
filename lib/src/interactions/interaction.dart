@@ -24,6 +24,9 @@ class Interaction with Metadata {
   /// ID of the guild where this interaction was sent from.
   BigInt? guild_id;
 
+  /// (Partial) channel object where this interaction was sent from.
+  JsonData? channel;
+
   /// ID of the channel where this interaction was sent from.
   BigInt? channel_id;
 
@@ -81,6 +84,10 @@ class Interaction with Metadata {
 
     if (payload["guild_id"] != null) {
       this.guild_id = BigInt.parse(payload["guild_id"]);
+    }
+
+    if (payload["channel"] != null) {
+      this.channel = payload["channel"];
     }
 
     if (payload["channel_id"] != null) {
