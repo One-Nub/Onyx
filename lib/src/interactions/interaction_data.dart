@@ -141,6 +141,9 @@ class MessageComponentData implements InteractionData {
   /// Selected values from a select menu message component.
   List<String>? values;
 
+  /// Resolved objects provided by Discord.
+  JsonData? resolved;
+
   MessageComponentData.fromJson(JsonData payload) {
     this.custom_id = payload["custom_id"];
 
@@ -150,6 +153,10 @@ class MessageComponentData implements InteractionData {
 
     if (payload["values"] != null) {
       values = [...payload["values"]];
+    }
+
+    if (payload["resolved"] != null) {
+      resolved = payload["resolved"];
     }
   }
 
