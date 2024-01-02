@@ -66,82 +66,95 @@ class Onyx {
   ///
   /// Modal submission interactions will either be passed to a handler based upon the custom_id
   /// or streamed via [OnyxStreams.modalStream].
-  void dispatchInteraction(Interaction interaction) {
-    if (interaction.type == InteractionType.application_command) {
-      ApplicationCommandData? commandData = interaction.data as ApplicationCommandData?;
-      if (commandData == null) {
-        throw UnsupportedError("The given application command interaction does not contain any data. "
-            "This is unsupported when dispatching.");
-      }
+  Future<void> dispatchInteraction(Interaction interaction) async {
+    switch (interaction.type) {
+      case InteractionType.application_command:
+        ApplicationCommandData? commandData = interaction.data as ApplicationCommandData?;
+        if (commandData == null) {
+          throw UnsupportedError("The given application command interaction does not contain any data. "
+              "This is unsupported when dispatching.");
+        }
 
-      String interactionName = commandData.name;
-      if (appCommandHandlers.containsKey(interactionName)) {
-        appCommandHandlers[interactionName]!(interaction);
-      } else {
-        throw HandlerNotFoundError(
-            "No command handler was registered or found for the command ${interactionName}.");
-      }
-    } else if (interaction.type == InteractionType.message_component) {
-      MessageComponentData? componentData = interaction.data as MessageComponentData?;
-      if (componentData == null) {
-        throw UnsupportedError("The given message component interaction does not contain any data. "
-            "This is unsupported when dispatching.");
-      }
+        String interactionName = commandData.name;
+        if (appCommandHandlers.containsKey(interactionName)) {
+          await appCommandHandlers[interactionName]!(interaction);
+        } else {
+          throw HandlerNotFoundError(
+              "No command handler was registered or found for the command ${interactionName}.");
+        }
 
-      String? customID = componentData.custom_id;
+        break;
 
-      if (genericComponentHandlers.containsKey(customID)) {
-        genericComponentHandlers[customID]!(interaction);
-      } else {
+      case InteractionType.message_component:
+        MessageComponentData? componentData = interaction.data as MessageComponentData?;
+        if (componentData == null) {
+          throw UnsupportedError("The given message component interaction does not contain any data. "
+              "This is unsupported when dispatching.");
+        }
+
+        String? customID = componentData.custom_id;
+
+        if (genericComponentHandlers.containsKey(customID)) {
+          await genericComponentHandlers[customID]!(interaction);
+          break;
+        }
+
         bool success = false;
         for (var key in genericComponentHandlers.keys) {
           if (customID.startsWith(key)) {
             success = true;
-            genericComponentHandlers[key]!(interaction);
+            await genericComponentHandlers[key]!(interaction);
             break;
           }
         }
 
         if (!success) interactionStreams.componentController.add(interaction);
-      }
-    } else if (interaction.type == InteractionType.autocomplete) {
-      ApplicationCommandData? autocompleteData = interaction.data as ApplicationCommandData?;
-      if (autocompleteData == null) {
-        throw UnsupportedError("The given autocomplete interaction does not contain any data. "
-            "This is unsupported when dispatching.");
-      }
 
-      if (genericAutocompleteHandlers.containsKey(autocompleteData.name)) {
-        genericAutocompleteHandlers[autocompleteData.name]!(interaction);
-      } else {
-        interactionStreams.autocompleteController.add(interaction);
-      }
-    } else if (interaction.type == InteractionType.modal_submit) {
-      ModalSubmitData? modalData = interaction.data as ModalSubmitData?;
-      if (modalData == null) {
-        throw UnsupportedError("The given modal submit interaction does not contain any data. "
-            "This is unsupported when dispatching.");
-      }
+        break;
 
-      String? customID = modalData.custom_id;
-      if (genericModalHandlers.containsKey(customID)) {
-        genericModalHandlers[customID]!(interaction);
-      } else {
+      case InteractionType.autocomplete:
+        ApplicationCommandData? autocompleteData = interaction.data as ApplicationCommandData?;
+        if (autocompleteData == null) {
+          throw UnsupportedError("The given autocomplete interaction does not contain any data. "
+              "This is unsupported when dispatching.");
+        }
+
+        if (genericAutocompleteHandlers.containsKey(autocompleteData.name)) {
+          await genericAutocompleteHandlers[autocompleteData.name]!(interaction);
+        } else {
+          interactionStreams.autocompleteController.add(interaction);
+        }
+
+        break;
+
+      case InteractionType.modal_submit:
+        ModalSubmitData? modalData = interaction.data as ModalSubmitData?;
+        if (modalData == null) {
+          throw UnsupportedError("The given modal submit interaction does not contain any data. "
+              "This is unsupported when dispatching.");
+        }
+
+        String? customID = modalData.custom_id;
+        if (genericModalHandlers.containsKey(customID)) {
+          await genericModalHandlers[customID]!(interaction);
+          return;
+        }
+
         bool success = false;
-
         for (var key in genericModalHandlers.keys) {
           if (customID.startsWith(key)) {
             success = true;
-            genericModalHandlers[key]!(interaction);
+            await genericModalHandlers[key]!(interaction);
             break;
           }
         }
 
         if (!success) interactionStreams.modalController.add(interaction);
-      }
-    } else {
-      throw UnsupportedError("The given interaction type of ${interaction.type} is not "
-          "accepted to be dispatched.");
+        break;
+
+      default:
+        throw UnsupportedError("The given interaction type of ${interaction.type} is not "
+            "accepted to be dispatched yet.");
     }
   }
 
