@@ -191,11 +191,7 @@ class ModalSubmitData implements InteractionData {
         components.add(ActionRow.fromJson(element));
       } else if (componentType == ComponentType.button) {
         components.add(Button.fromJson(element));
-      } else if (componentType == ComponentType.string_select ||
-          componentType == ComponentType.user_select ||
-          componentType == ComponentType.role_select ||
-          componentType == ComponentType.mentionable_select ||
-          componentType == ComponentType.channel_select) {
+      } else if (componentType.isSelectMenu) {
         components.add(SelectMenu.fromJson(element));
       } else if (componentType == ComponentType.text_input) {
         components.add(TextInputResponse.fromJson(element));

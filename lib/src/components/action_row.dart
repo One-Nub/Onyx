@@ -30,11 +30,7 @@ class ActionRow implements Component {
 
       if (elementType == ComponentType.button) {
         components.add(Button.fromJson(element));
-      } else if (elementType == ComponentType.string_select ||
-          elementType == ComponentType.user_select ||
-          elementType == ComponentType.role_select ||
-          elementType == ComponentType.mentionable_select ||
-          elementType == ComponentType.channel_select) {
+      } else if (elementType.isSelectMenu) {
         components.add(SelectMenu.fromJson(element));
       } else if (elementType == ComponentType.text_input) {
         components.add(TextInputResponse.fromJson(element));
