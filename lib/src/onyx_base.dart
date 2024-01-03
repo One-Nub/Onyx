@@ -56,7 +56,7 @@ class Onyx {
   /// Application commands must have a handler that was registered into the [appCommandHandlers] map,
   /// where the name of the command in the interaction matches the name that was defined when registering
   /// the command into the [appCommandHandlers] map. Without a matching handler, the interaction
-  /// will be dropped.
+  /// will be dropped and a [HandlerNotFoundError] will be raised.
   ///
   /// Message component interactions will either be passed to a handler based upon the custom_id
   /// or streamed via [OnyxStreams.componentStream].
@@ -66,6 +66,8 @@ class Onyx {
   ///
   /// Modal submission interactions will either be passed to a handler based upon the custom_id
   /// or streamed via [OnyxStreams.modalStream].
+  ///
+  /// Streams are not given events that have been successfully handled by a corresponding handler.
   Future<void> dispatchInteraction(Interaction interaction) async {
     switch (interaction.type) {
       case InteractionType.application_command:

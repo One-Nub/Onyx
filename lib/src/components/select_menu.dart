@@ -23,13 +23,25 @@ class SelectMenu implements Component {
 
   /// The [SelectMenuOption]s that will be displayed for this Select Menu component.
   ///
-  /// Limited to 25 options to choose from at most.
+  /// Limited to 25 options to choose from at most. This only works for string select menus
+  /// ([ComponentType.string_select]).
   late List<SelectMenuOption> options;
+
+  /// Channel types that should be displayed to the user for a channel selection menu.
+  ///
+  /// Documented channel types are here: https://discord.com/developers/docs/resources/channel#channel-object-channel-types
+  /// Currently there is no enum for channel types within Onyx, but it may be introduced in the future.
+  late List<int> displayed_channel_types;
 
   /// Text that will appear if nothing is selected.
   ///
   /// Limited to 150 characters at most.
-  String? placeholderText;
+  String? placeholder_text;
+
+  /// Default options for user, role, mentionable (users + roles), or channel select menus.
+  ///
+  /// Must be within min_value and max_value ranges.
+  late List<DefaultMenuOption> default_selection;
 
   /// Minimum number of values that can be selected.
   ///
@@ -50,15 +62,15 @@ class SelectMenu implements Component {
       {required this.custom_id,
       this.type = ComponentType.string_select,
       List<SelectMenuOption>? options,
-      this.placeholderText,
+      this.placeholder_text,
       this.min_values,
       this.max_values,
-      this.disabled = false}) {
-    if (options != null) {
-      this.options = options;
-    } else {
-      this.options = [];
-    }
+      this.disabled = false,
+      List<int>? displayed_channel_types,
+      List<DefaultMenuOption>? default_selection}) {
+    this.options = options ?? [];
+    this.displayed_channel_types = displayed_channel_types ?? [];
+    this.default_selection = default_selection ?? [];
   }
 
   SelectMenu.fromJson(JsonData data) {
@@ -71,15 +83,11 @@ class SelectMenu implements Component {
       options.add(SelectMenuOption.fromJson(element));
     });
 
-    placeholderText = data["placeholder"];
+    placeholder_text = data["placeholder"];
     min_values = data["min_values"];
     max_values = data["max_values"];
 
-    if (data["disabled"] == null) {
-      disabled = false;
-    } else {
-      disabled = data["disabled"];
-    }
+    disabled = data["disabled"] ?? false;
   }
 
   /// Add an [option] to this Select Menu.
@@ -95,7 +103,22 @@ class SelectMenu implements Component {
       finalData["options"] = optionsList;
     }
 
-    if (placeholderText != null) finalData["placeholder"] = placeholderText;
+    // Add channel types to display if a channel select menu.
+    if (type == ComponentType.channel_select) {
+      finalData["channel_types"] = displayed_channel_types;
+    }
+
+    finalData["placeholder"] = placeholder_text;
+
+    // Only add default values if it is a valid select menu type.
+    if (type == ComponentType.user_select ||
+        type == ComponentType.role_select ||
+        type == ComponentType.mentionable_select ||
+        type == ComponentType.channel_select) if (placeholder_text != null) {
+      List<JsonData> defaultOptions = [];
+      default_selection.forEach((element) => defaultOptions.add(element.toJson()));
+      finalData["default_values"] = defaultOptions;
+    }
 
     if (min_values != null) finalData["min_values"] = min_values;
 
@@ -159,5 +182,20 @@ class SelectMenuOption {
   @override
   String toString() {
     return "${toJson()}";
+  }
+}
+
+/// A default option to be selected for a user, role, mentionable (users + roles), or channel select menus.
+class DefaultMenuOption {
+  /// ID of a user, role, or channel.
+  late final BigInt id;
+
+  /// String type of the [id]. Must be "user", "role", or "channel".
+  late final String type;
+
+  DefaultMenuOption(this.id, this.type);
+
+  JsonData toJson() {
+    return {"id": id, "type": type};
   }
 }

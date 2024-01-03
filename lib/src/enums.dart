@@ -217,6 +217,8 @@ enum InteractionType {
 }
 
 /// Consists of accepted Interaction Response types.
+///
+/// https://discord.com/developers/docs/interactions/receiving-and-responding#interaction-response-object-interaction-callback-type
 enum InteractionResponseType {
   /// A PONG response, utilized for responding to PING interactions from Discord.
   pong(1),
@@ -227,17 +229,20 @@ enum InteractionResponseType {
   /// Defer an interaction to be responded to later.
   defer_message_response(5),
 
-  /// For components, defer so the original message can be edited later.
+  /// For component interactions, defer so the original message can be edited later.
   defer_update_message(6),
 
-  /// For components, edit the message that the component was attached to.
+  /// For component interactions, edit the message that the component was attached to.
   update_message(7),
 
   /// Reply to an autocomplete interaction with some suggested choices to pick from.
   autocomplete_suggestions(8),
 
   /// Respond with a modal popup.
-  modal(9);
+  modal(9),
+
+  /// Respond with a premium upgrade button.
+  premium_required(10);
 
   const InteractionResponseType(this.value);
   final int value;
@@ -258,6 +263,8 @@ enum InteractionResponseType {
         return InteractionResponseType.autocomplete_suggestions;
       case 9:
         return InteractionResponseType.modal;
+      case 10:
+        return InteractionResponseType.premium_required;
       default:
         throw UnimplementedError("The type $value is not implemented as an interaction response type.");
     }
