@@ -28,11 +28,11 @@ class ActionRow implements Component {
     (data["components"] as List).forEach((element) {
       ComponentType elementType = ComponentType.fromInt(element["type"]);
 
-      if (elementType == ComponentType.button) {
+      if (elementType.isButton) {
         components.add(Button.fromJson(element));
       } else if (elementType.isSelectMenu) {
         components.add(SelectMenu.fromJson(element));
-      } else if (elementType == ComponentType.text_input) {
+      } else if (elementType.isTextInput) {
         components.add(TextInputResponse.fromJson(element));
       }
     });
@@ -42,7 +42,7 @@ class ActionRow implements Component {
   void addComponent(Component component) {
     if (components.isNotEmpty && component.type.isSelectMenu) {
       throw StateError("Cannot add a select menu to a non-empty action row.");
-    } else if (components.isNotEmpty && component.type == ComponentType.text_input) {
+    } else if (components.isNotEmpty && component.type.isTextInput) {
       throw StateError("Cannot add text input to a non-empty action row.");
     }
 
@@ -50,7 +50,7 @@ class ActionRow implements Component {
     bool containsTextInput = false;
     components.forEach((element) {
       if (element.type.isSelectMenu) containsSelection = true;
-      if (element.type == ComponentType.text_input) containsTextInput = true;
+      if (element.type.isTextInput) containsTextInput = true;
     });
 
     if (containsSelection || containsTextInput) {

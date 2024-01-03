@@ -187,13 +187,13 @@ class ModalSubmitData implements InteractionData {
 
       // Although only text responses are supported rn, might as well cover all the bases
       // here for the future.
-      if (componentType == ComponentType.action_row) {
+      if (componentType.isActionRow) {
         components.add(ActionRow.fromJson(element));
-      } else if (componentType == ComponentType.button) {
+      } else if (componentType.isButton) {
         components.add(Button.fromJson(element));
       } else if (componentType.isSelectMenu) {
         components.add(SelectMenu.fromJson(element));
-      } else if (componentType == ComponentType.text_input) {
+      } else if (componentType.isTextInput) {
         components.add(TextInputResponse.fromJson(element));
       } else {
         throw UnimplementedError("A component type of $componentType is not supported yet!");
