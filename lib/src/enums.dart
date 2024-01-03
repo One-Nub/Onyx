@@ -162,6 +162,18 @@ enum ComponentType {
         throw UnimplementedError("The type $value is not implemented as a component type.");
     }
   }
+
+  bool get isSelectMenu {
+    const SELECT_MENU_TYPES = [
+      ComponentType.string_select,
+      ComponentType.user_select,
+      ComponentType.role_select,
+      ComponentType.mentionable_select,
+      ComponentType.channel_select
+    ];
+
+    return SELECT_MENU_TYPES.contains(this);
+  }
 }
 
 /// Consists of accepted Interaction types.
