@@ -163,6 +163,7 @@ enum ComponentType {
     }
   }
 
+  /// Determine if this is a select menu.
   bool get isSelectMenu {
     const SELECT_MENU_TYPES = [
       ComponentType.string_select,
@@ -174,6 +175,15 @@ enum ComponentType {
 
     return SELECT_MENU_TYPES.contains(this);
   }
+
+  /// Determine if this is a button.
+  bool get isButton => this == ComponentType.button;
+
+  /// Determine if this is an action row.
+  bool get isActionRow => this == ComponentType.action_row;
+
+  /// Determine if this is a text input component.
+  bool get isTextInput => this == ComponentType.text_input;
 }
 
 /// Consists of accepted Interaction types.
