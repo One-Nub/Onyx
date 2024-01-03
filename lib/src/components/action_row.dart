@@ -17,7 +17,9 @@ class ActionRow implements Component {
 
   /// Create an Action Row with optionally some [components] on creation.
   ActionRow({ComponentList? components}) {
-    this.components = [...?components];
+    if (components != null) {
+      components.forEach((element) => this.addComponent(element));
+    }
   }
 
   /// Create an Action Row from a json decoded payload as [data].
@@ -41,7 +43,29 @@ class ActionRow implements Component {
   }
 
   /// Add a [component] to [components]
-  void addComponent(Component component) => components.add(component);
+  void addComponent(Component component) {
+    if (components.isNotEmpty && component.type.isSelectMenu) {
+      throw StateError("Cannot add a select menu to a non-empty action row.");
+    } else if (components.isNotEmpty && component.type == ComponentType.text_input) {
+      throw StateError("Cannot add text input to a non-empty action row.");
+    }
+
+    bool containsSelection = false;
+    bool containsTextInput = false;
+    components.forEach((element) {
+      if (element.type.isSelectMenu) containsSelection = true;
+      if (element.type == ComponentType.text_input) containsTextInput = true;
+    });
+
+    if (containsSelection || containsTextInput) {
+      throw StateError("Cannot add more components to an action row with a select menu or text input.");
+    }
+
+    if (components.length >= 5) {
+      throw StateError("Cannot add more than 5 button components to an action row.");
+    }
+    components.add(component);
+  }
 
   JsonData toJson() {
     List<JsonData> componentList = [];
